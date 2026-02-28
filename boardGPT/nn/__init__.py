@@ -19,10 +19,14 @@ from .gpt import (
     GPT,
     GPTConfig
 )
-from .gptae import (
-    GPTAE,
-    GPTAEConfig
-)
+try:
+    from .gptae import (
+        GPTAE,
+        GPTAEConfig
+    )
+except ModuleNotFoundError:
+    GPTAE = None
+    GPTAEConfig = None
 from .layer_norm import LayerNorm
 from .block import Block, MLP, CausalSelfAttention
 from .board_probes import BoardLinearProbe, BoardMLPProbe

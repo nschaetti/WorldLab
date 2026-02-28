@@ -38,8 +38,16 @@ import torch.nn as nn
 from torch.nn import functional as F
 import json
 import yaml
-from huggingface_hub import hf_hub_download
-from safetensors.torch import load_file
+
+try:
+    from huggingface_hub import hf_hub_download
+except ModuleNotFoundError:
+    hf_hub_download = None
+
+try:
+    from safetensors.torch import load_file
+except ModuleNotFoundError:
+    load_file = None
 
 from .hooks import HookPoint
 from .layer_norm import LayerNorm
@@ -377,6 +385,17 @@ class GPT(nn.Module):
         """
         Load a pretrained GPT-2 model from a HuggingFace.
         """
+        if hf_hub_download is None:
+            raise ModuleNotFoundError(
+                "from_pretrained requires optional dependency 'huggingface_hub'. "
+                "Install it with `pip install huggingface_hub`."
+            )
+        if load_file is None:
+            raise ModuleNotFoundError(
+                "from_pretrained requires optional dependency 'safetensors'. "
+                "Install it with `pip install safetensors`."
+            )
+
         # Download files
         config_path = hf_hub_download(repo_id, filename="config.yaml", subfolder="safetensors", revision=revision)
         weights_path = hf_hub_download(repo_id, filename="model.safetensors", subfolder="safetensors", revision=revision)

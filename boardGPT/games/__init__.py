@@ -25,12 +25,18 @@ from .othello import (
     convert_ids_to_notation as othello_convert_ids_to_notation,
     OthelloGame
 )
-from .checkers import (
-    create_id_to_move_mapping as checkers_create_id_to_move_mapping,
-    convert_ids_to_notation as checkers_convert_ids_to_notation,
-    CheckersGame,
-    CheckersBoard
-)
+try:
+    from .checkers import (
+        create_id_to_move_mapping as checkers_create_id_to_move_mapping,
+        convert_ids_to_notation as checkers_convert_ids_to_notation,
+        CheckersGame,
+        CheckersBoard
+    )
+except ModuleNotFoundError:
+    checkers_create_id_to_move_mapping = None
+    checkers_convert_ids_to_notation = None
+    CheckersGame = None
+    CheckersBoard = None
 
 __all__ = [
     "GameInterface",

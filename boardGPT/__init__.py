@@ -16,14 +16,18 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
 # Imports
-from typing import Union, List, Tuple, Optional, Any
+from typing import Union, List, Tuple, Optional, Any, Dict
 import random
 import numpy as np
 
 from .games.othello.othello_simulator import OthelloGame
 from .games.othello.othello_utils import verify_game as verify_othello_game
-from .games.checkers.checkers_simulator import CheckersGame
-from .games.checkers.checkers_utils import verify_game as verify_checkers_game
+try:
+    from .games.checkers.checkers_simulator import CheckersGame
+    from .games.checkers.checkers_utils import verify_game as verify_checkers_game
+except ModuleNotFoundError:
+    CheckersGame = None
+    verify_checkers_game = None
 from .games.game_interface import GameInterface
 
 
@@ -70,7 +74,7 @@ def othello(moves_str: Union[str, List[str]]) -> OthelloGame:
 # end othello
 
 
-def checkers(moves_str: Union[str, List[str]]) -> CheckersGame:
+def checkers(moves_str: Union[str, List[str]]) -> Any:
     """
     Create a CheckersGame object from a string of moves.
     
@@ -100,6 +104,12 @@ def checkers(moves_str: Union[str, List[str]]) -> CheckersGame:
     moves = [move for move in moves if move]
     
     # Verify that the move sequence is valid
+    if CheckersGame is None or verify_checkers_game is None:
+        raise ModuleNotFoundError(
+            "Checkers dependencies are not available in this environment. "
+            "Install optional visualization dependencies to enable checkers APIs."
+        )
+
     is_valid, invalid_moves = verify_checkers_game(moves)
     
     if not is_valid:
@@ -345,10 +355,12 @@ def generate_game(
     # Map of game types to their respective game classes
     from boardGPT.games.othello.othello_simulator import OthelloGame
     
-    game_classes = {
+    game_classes: Dict[str, Any] = {
         "othello": OthelloGame,
-        "checkers": CheckersGame,
     }
+
+    if CheckersGame is not None:
+        game_classes["checkers"] = CheckersGame
     
     # Check if the game type is supported
     if game not in game_classes:
@@ -433,4 +445,3 @@ def generate_game(
         return game
     # end if
 # end generate_game
-

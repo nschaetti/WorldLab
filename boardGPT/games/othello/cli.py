@@ -334,3 +334,22 @@ def othello_load(args):
     # end try
 # end def othello_load
 
+
+def othello_interpretability(args: argparse.Namespace):
+    """
+    Delegate interpretability subcommands to `boardGPT.interpretability.cli`.
+
+    Usage from the games CLI:
+        boardgpt othello interp smoke --seed 0
+        boardgpt othello interp b2-metrics --layers 0,1
+    """
+    from boardGPT.interpretability.cli import main as interp_main
+
+    interp_args = getattr(args, "interp_args", None)
+    if interp_args is None:
+        interp_args = []
+
+    if len(interp_args) > 0 and interp_args[0] == "--":
+        interp_args = interp_args[1:]
+
+    return interp_main(interp_args)

@@ -15,7 +15,24 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
-from .models import load_safetensors
+from typing import Optional
+
+_models_import_error: Optional[ModuleNotFoundError] = None
+
+try:
+    from .models import load_safetensors as _load_safetensors
+except ModuleNotFoundError as exc:
+    _models_import_error = exc
+    _load_safetensors = None
+
+
+def load_safetensors(*args, **kwargs):
+    if _load_safetensors is None:
+        raise ModuleNotFoundError(
+            "load_safetensors requires optional dependency 'safetensors'. "
+            "Install it with `pip install safetensors` to enable checkpoint loading."
+        ) from _models_import_error
+    return _load_safetensors(*args, **kwargs)
 from .training import (
     TrainingConfig,
     load_config,

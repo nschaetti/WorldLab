@@ -1,0 +1,58 @@
+experiment:
+  name: "b4_real_othello"
+  stage: "B4"
+  mode: "real"
+  output_root: "out_interp/b4"
+
+model:
+  # Absolute or repo-relative paths
+  model_path: "out/ckpt_iter240000.pt"
+  config_path: "config/config.yaml"
+  device: "cpu"
+  dtype: "float32"
+
+probe:
+  type: "linear"    # linear | mlp
+  path: null         # optional .pt checkpoint for a trained probe
+  hidden_dim: 256    # used if type=mlp
+
+dataset:
+  path: "data/othello/synthetic-image-othello-train.bin"
+  format: "bin"     # bin | pkl
+  split: "train"    # train | val | test
+  block_size: 60
+  batch_size: 16
+  num_workers: 0
+  max_examples: 256
+
+protocol:
+  type: "metrics_and_attribution"   # metrics_only | attribution_only | metrics_and_attribution
+  layers: [0, 1, 2, 3]
+  position: "last"                  # last | int
+  target_class: 2
+  target_cell: 5
+  target_cells: [3, 5, 9, 12]
+  max_examples: 128
+
+intervention:
+  steps: 30
+  lr: 0.08
+  reg_strength: 0.0001
+  clamp_norm: null
+
+batch:
+  seeds: [0, 1, 2]
+  checkpoints:
+    - name: "baseline"
+      model_path: "out/ckpt_iter240000.pt"
+      config_path: "config/config.yaml"
+    - name: "candidate"
+      model_path: "out/ckpt_iter230000.pt"
+      config_path: "config/config.yaml"
+
+report:
+  top_k: 15
+  save_per_example: true
+  save_tensors: true
+  export_csv: true
+  export_markdown: true
