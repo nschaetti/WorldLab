@@ -57,6 +57,17 @@ from .real_pipeline import (
     run_b4_single_from_config,
     run_b4_from_config_file,
     run_b4_batch_from_config_file,
+    run_b6_matrix_from_config_file,
+)
+from .reproducibility import (
+    set_global_determinism,
+    collect_environment_snapshot,
+    write_reproducibility_pack,
+)
+from .publish import (
+    generate_publication_markdown,
+    generate_publication_notebook,
+    run_b8_publish_from_matrix_dir,
 )
 
 
@@ -108,4 +119,11 @@ __all__ = [
     "run_b4_single_from_config",
     "run_b4_from_config_file",
     "run_b4_batch_from_config_file",
+    "run_b6_matrix_from_config_file",
+    "set_global_determinism",
+    "collect_environment_snapshot",
+    "write_reproducibility_pack",
+    "generate_publication_markdown",
+    "generate_publication_notebook",
+    "run_b8_publish_from_matrix_dir",
 ]

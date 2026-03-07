@@ -9,11 +9,13 @@ from typing import List
 
 from .io import load_run_artifacts
 from .pipeline import run_b3_demo_pipeline
+from .publish import run_b8_publish_from_matrix_dir
 from .real_pipeline import (
     load_exp_config,
     run_b4_batch_from_config_file,
     run_b4_from_config_file,
     run_b4_single_from_config,
+    run_b6_matrix_from_config_file,
 )
 
 
@@ -71,6 +73,28 @@ def build_parser() -> argparse.ArgumentParser:
     real_batch = sub.add_parser("real-batch", help="Run B4 multi-seed/checkpoint batch from exp config")
     real_batch.add_argument("--exp-config", required=True)
     real_batch.add_argument("--run-name", default=None)
+
+    real_matrix = sub.add_parser("real-matrix", help="Run B6 systematic experiment matrix from exp config")
+    real_matrix.add_argument("--exp-config", required=True)
+    real_matrix.add_argument("--run-name", default=None)
+    real_matrix.add_argument("--no-resume", action="store_true", help="Disable resume; rerun all matrix points")
+
+    real_publish = sub.add_parser("real-publish", help="Run B8 publication pack generation from matrix directory")
+    real_publish.add_argument("--matrix-dir", required=True)
+    real_publish.add_argument("--title", default="Interpretability Matrix Report")
+    real_publish.add_argument("--markdown-name", default="publication_report.md")
+    real_publish.add_argument("--notebook-name", default="publication_report.ipynb")
+
+    real_one_shot = sub.add_parser(
+        "real-one-shot",
+        help="Run B6 matrix then B8 publication generation in one command",
+    )
+    real_one_shot.add_argument("--exp-config", required=True)
+    real_one_shot.add_argument("--run-name", default=None)
+    real_one_shot.add_argument("--no-resume", action="store_true", help="Disable resume for matrix stage")
+    real_one_shot.add_argument("--title", default="Interpretability Matrix Report")
+    real_one_shot.add_argument("--markdown-name", default="publication_report.md")
+    real_one_shot.add_argument("--notebook-name", default="publication_report.ipynb")
 
     return parser
 
@@ -149,6 +173,53 @@ def main(argv: List[str] | None = None) -> int:
         out = run_b4_batch_from_config_file(args.exp_config, run_name=args.run_name)
         print(f"Batch directory: {out['batch_dir']}")
         print(json.dumps(out.get("summary", {}), indent=2))
+        return 0
+
+    if args.command == "real-matrix":
+        out = run_b6_matrix_from_config_file(
+            args.exp_config,
+            run_name=args.run_name,
+            resume=not bool(args.no_resume),
+        )
+        print(f"Matrix directory: {out['matrix_dir']}")
+        print(json.dumps(out.get("summary", {}), indent=2))
+        return 0
+
+    if args.command == "real-publish":
+        out = run_b8_publish_from_matrix_dir(
+            matrix_dir=args.matrix_dir,
+            title=args.title,
+            markdown_name=args.markdown_name,
+            notebook_name=args.notebook_name,
+        )
+        print(json.dumps(out, indent=2))
+        return 0
+
+    if args.command == "real-one-shot":
+        out_matrix = run_b6_matrix_from_config_file(
+            args.exp_config,
+            run_name=args.run_name,
+            resume=not bool(args.no_resume),
+        )
+        matrix_dir = out_matrix["matrix_dir"]
+        out_publish = run_b8_publish_from_matrix_dir(
+            matrix_dir=matrix_dir,
+            title=args.title,
+            markdown_name=args.markdown_name,
+            notebook_name=args.notebook_name,
+        )
+        print(
+            json.dumps(
+                {
+                    "matrix": {
+                        "matrix_dir": matrix_dir,
+                        "summary": out_matrix.get("summary", {}),
+                    },
+                    "publication": out_publish,
+                },
+                indent=2,
+            )
+        )
         return 0
 
     parser.print_help()

@@ -8,7 +8,11 @@ import time
 from typing import Dict, Optional
 
 from boardGPT.interpretability.pipeline import run_b3_demo_pipeline
-from boardGPT.interpretability.real_pipeline import run_b4_batch_from_config_file, run_b4_from_config_file
+from boardGPT.interpretability.real_pipeline import (
+    run_b4_batch_from_config_file,
+    run_b4_from_config_file,
+    run_b6_matrix_from_config_file,
+)
 
 
 def launch_run(
@@ -36,6 +40,11 @@ def launch_run(
             raise ValueError("exp_config is required for b4_batch mode")
         output = run_b4_batch_from_config_file(exp_config, run_name=run_name)
         run_dir = str(output.get("batch_dir", ""))
+    elif mode == "b6_matrix":
+        if not exp_config:
+            raise ValueError("exp_config is required for b6_matrix mode")
+        output = run_b6_matrix_from_config_file(exp_config, run_name=run_name, resume=True)
+        run_dir = str(output.get("matrix_dir", ""))
     else:
         raise ValueError(f"Unsupported run mode: {mode}")
 

@@ -14,12 +14,19 @@ import torch
 from boardGPT.interpretability.ui.activations import get_residual_vector, summarize_vector
 from boardGPT.interpretability.ui.compare import compare_run_dirs
 from boardGPT.interpretability.ui.inference import run_next_token_inference
+from boardGPT.interpretability.ui.jobs import JobManager
 from boardGPT.interpretability.ui.loaders import (
     build_untrained_probe,
     load_model_from_paths,
     load_probe_from_path,
 )
-from boardGPT.interpretability.ui.run_index import discover_runs, read_run_text_preview
+from boardGPT.interpretability.ui.run_index import (
+    discover_runs,
+    parse_tags,
+    read_run_meta,
+    read_run_text_preview,
+    write_run_meta,
+)
 from boardGPT.interpretability.ui.runs import launch_run
 from boardGPT.interpretability.ui.parsing import parse_input_to_tensor, parse_position
 from boardGPT.interpretability.ui.patching import run_activation_patch_experiment
@@ -45,6 +52,36 @@ def _cached_load_probe(path: str, input_dim: int, probe_type: str, hidden_dim: i
         hidden_dim=hidden_dim,
         device=device,
     )
+
+
+@st.cache_resource(show_spinner=False)
+def _cached_job_manager() -> JobManager:
+    return JobManager(max_workers=1)
+
+
+RUN_PRESETS = {
+    "custom": {},
+    "quick_sanity": {
+        "run_mode": "b4_real",
+        "run_name": "quick_sanity",
+        "run_exp_config": "config/interpretability/b4_example.yaml",
+    },
+    "stability": {
+        "run_mode": "b4_batch",
+        "run_name": "stability",
+        "run_exp_config": "config/interpretability/b4_example.yaml",
+    },
+    "comparison": {
+        "run_mode": "b4_batch",
+        "run_name": "comparison",
+        "run_exp_config": "config/interpretability/b4_example.yaml",
+    },
+    "matrix": {
+        "run_mode": "b6_matrix",
+        "run_name": "matrix",
+        "run_exp_config": "config/interpretability/b4_example.yaml",
+    },
+}
 
 
 def _sidebar_model_probe() -> None:
@@ -411,25 +448,42 @@ def _tab_activation_patching() -> None:
 def _tab_runs_compare() -> None:
     st.subheader("Runs & Compare (B5-C)")
     sub1, sub2, sub3 = st.tabs(["Launcher", "Explorer", "Compare"])
+    job_manager = _cached_job_manager()
 
     with sub1:
         st.markdown("Launch B3/B4 runs directly from the dashboard")
-        c1, c2 = st.columns(2)
-        st.session_state["run_mode"] = c1.selectbox(
-            "Run mode",
-            options=["b3_demo", "b4_real", "b4_batch"],
-            index=["b3_demo", "b4_real", "b4_batch"].index(st.session_state.get("run_mode", "b3_demo")),
+        c0, c1 = st.columns([1, 1])
+        preset = c0.selectbox(
+            "Preset",
+            options=list(RUN_PRESETS.keys()),
+            index=list(RUN_PRESETS.keys()).index(st.session_state.get("run_preset", "custom"))
+            if st.session_state.get("run_preset", "custom") in RUN_PRESETS
+            else 0,
         )
-        st.session_state["run_name"] = c2.text_input("Run name (optional)", value=st.session_state.get("run_name", ""))
+        st.session_state["run_preset"] = preset
+        if c1.button("Apply preset", use_container_width=True):
+            bundle = RUN_PRESETS.get(preset, {})
+            for key, value in bundle.items():
+                st.session_state[key] = value
+            set_success(f"Preset applied: {preset}")
 
-        c3, c4 = st.columns(2)
-        st.session_state["runs_root"] = c3.text_input("Runs root", value=st.session_state.get("runs_root", "out_interp"))
-        st.session_state["run_exp_config"] = c4.text_input(
+        c2, c3 = st.columns(2)
+        st.session_state["run_mode"] = c2.selectbox(
+            "Run mode",
+            options=["b3_demo", "b4_real", "b4_batch", "b6_matrix"],
+            index=["b3_demo", "b4_real", "b4_batch", "b6_matrix"].index(st.session_state.get("run_mode", "b3_demo")),
+        )
+        st.session_state["run_name"] = c3.text_input("Run name (optional)", value=st.session_state.get("run_name", ""))
+
+        c4, c5 = st.columns(2)
+        st.session_state["runs_root"] = c4.text_input("Runs root", value=st.session_state.get("runs_root", "out_interp"))
+        st.session_state["run_exp_config"] = c5.text_input(
             "B4 exp config",
             value=st.session_state.get("run_exp_config", "config/interpretability/b4_example.yaml"),
         )
 
-        if st.button("Launch Run", use_container_width=True):
+        sync_col, async_col, prune_col = st.columns(3)
+        if sync_col.button("Launch Run (sync)", use_container_width=True):
             try:
                 output = launch_run(
                     mode=st.session_state["run_mode"],
@@ -446,6 +500,59 @@ def _tab_runs_compare() -> None:
                 set_success(f"Run completed in {elapsed:.2f}s: {output.get('run_dir')}")
             except Exception as exc:
                 set_error(f"Run launch failed: {exc}")
+
+        if async_col.button("Submit Run (async)", use_container_width=True):
+            try:
+                job_id = job_manager.submit(
+                    mode=st.session_state["run_mode"],
+                    out_root=st.session_state["runs_root"],
+                    run_name=(st.session_state["run_name"].strip() or None),
+                    exp_config=st.session_state["run_exp_config"],
+                )
+                st.session_state["selected_job_id"] = job_id
+                set_success(f"Background job submitted: {job_id}")
+            except Exception as exc:
+                set_error(f"Async submit failed: {exc}")
+
+        if prune_col.button("Prune old jobs", use_container_width=True):
+            removed = job_manager.prune(keep_last=200)
+            set_success(f"Pruned {removed} old jobs")
+
+        st.markdown("**Job queue**")
+        jobs = job_manager.list_jobs(limit=200)
+        if jobs:
+            st.dataframe(jobs, use_container_width=True)
+            selected_default = st.session_state.get("selected_job_id")
+            job_ids = [j["job_id"] for j in jobs]
+            default_index = job_ids.index(selected_default) if selected_default in job_ids else 0
+            selected_job_id = st.selectbox("Selected job", options=job_ids, index=default_index)
+            st.session_state["selected_job_id"] = selected_job_id
+            jc1, jc2 = st.columns(2)
+            if jc1.button("Refresh selected job", use_container_width=True):
+                pass
+            if jc2.button("Cancel selected job", use_container_width=True):
+                ok = job_manager.cancel(selected_job_id)
+                if ok:
+                    set_success(f"Cancellation requested for {selected_job_id}")
+                else:
+                    set_error(f"Could not cancel job: {selected_job_id}")
+
+            details = job_manager.get(selected_job_id)
+            if isinstance(details, dict):
+                st.write({
+                    "job_id": details.get("job_id"),
+                    "status": details.get("status"),
+                    "elapsed_s": details.get("elapsed_s"),
+                    "run_dir": details.get("run_dir"),
+                    "cancel_requested": details.get("cancel_requested"),
+                    "error": details.get("error"),
+                })
+                events = details.get("events", [])
+                if isinstance(events, list):
+                    st.markdown("**Job logs**")
+                    st.dataframe(events, use_container_width=True)
+        else:
+            st.info("No jobs submitted yet")
 
         last = st.session_state.get("last_run_output")
         if isinstance(last, dict):
@@ -469,6 +576,18 @@ def _tab_runs_compare() -> None:
             options = [r["run_dir"] for r in runs]
             selected = st.selectbox("Select run", options=options, key="explorer_selected_run")
             st.write({"run_dir": selected})
+
+            meta = read_run_meta(selected)
+            default_tags = ", ".join(meta.get("tags", [])) if isinstance(meta.get("tags", []), list) else ""
+            default_notes = str(meta.get("notes", ""))
+            tags_text = st.text_input("Tags (comma separated)", value=default_tags, key="run_tags_input")
+            notes_text = st.text_area("Notes", value=default_notes, key="run_notes_input", height=120)
+            if st.button("Save tags/notes", use_container_width=True):
+                try:
+                    meta_path = write_run_meta(selected, tags=parse_tags(tags_text), notes=notes_text)
+                    set_success(f"Run metadata saved: {meta_path}")
+                except Exception as exc:
+                    set_error(f"Could not save run metadata: {exc}")
 
             report_preview = read_run_text_preview(selected, "report.md", max_chars=4000)
             if report_preview:

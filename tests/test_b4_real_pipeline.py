@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 import torch
@@ -42,7 +43,7 @@ def _write_tiny_assets(tmp_path: Path) -> tuple[Path, Path, Path]:
 
 def _write_exp_config(tmp_path: Path, cfg_path: Path, model_path: Path, data_path: Path) -> Path:
     exp = {
-        "experiment": {"name": "b4_test", "output_root": str(tmp_path / "out")},
+        "experiment": {"name": "b4_test", "output_root": str(tmp_path / "out"), "validation_mode": "strict"},
         "model": {"model_path": str(model_path), "config_path": str(cfg_path), "device": "cpu"},
         "probe": {"type": "linear", "path": None},
         "dataset": {"path": str(data_path), "format": "pkl", "batch_size": 2, "max_examples": 4},
@@ -79,6 +80,16 @@ def test_b4_from_config_file(tmp_path: Path):
     assert (run_dir / "summary.json").exists()
     assert (run_dir / "report.md").exists()
     assert (run_dir / "metrics_by_layer.csv").exists()
+    assert (run_dir / "reproducibility.json").exists()
+    assert (run_dir / "reproducibility_report.md").exists()
+
+    summary = json.loads((run_dir / "summary.json").read_text(encoding="utf-8"))
+    assert summary["run_integrity"] in {"clean", "degraded"}
+    assert "telemetry" in summary
+    assert "elapsed_total_s" in summary["telemetry"]
+    assert "memory" in summary["telemetry"]
+    assert "reproducibility" in summary
+    assert summary["reproducibility"]["seed"]["seed"] == 0
 
 
 def test_b4_cli_real_batch(tmp_path: Path):
@@ -89,3 +100,21 @@ def test_b4_cli_real_batch(tmp_path: Path):
     assert rc == 0
     batch_dir = tmp_path / "out" / "batch_test"
     assert (batch_dir / "batch_summary.json").exists()
+
+
+def test_b4_tolerant_with_auto_probe_training(tmp_path: Path):
+    cfg_path, model_path, data_path = _write_tiny_assets(tmp_path)
+    exp_path = _write_exp_config(tmp_path, cfg_path, model_path, data_path)
+    exp = yaml.safe_load(exp_path.read_text(encoding="utf-8"))
+    exp["experiment"]["validation_mode"] = "tolerant"
+    exp["probe"]["path"] = None
+    exp["probe"]["auto_train_if_missing"] = True
+    exp["probe"]["auto_train_epochs"] = 1
+    exp["probe"]["auto_train_max_examples"] = 4
+    exp_path.write_text(yaml.safe_dump(exp), encoding="utf-8")
+
+    out = run_b4_from_config_file(str(exp_path), run_name="auto_probe")
+    summary = json.loads((Path(out["run_dir"]) / "summary.json").read_text(encoding="utf-8"))
+    assert summary["probe"]["checkpoint_loaded"] is False
+    assert summary["probe"]["auto_train"]["enabled"] is True
+    assert summary["probe"]["auto_train"]["trained"] is True

@@ -19,6 +19,33 @@ def _read_json(path: Path) -> Optional[Dict[str, Any]]:
     return obj if isinstance(obj, dict) else None
 
 
+def read_run_meta(run_dir: str) -> Dict[str, Any]:
+    """Read optional UI metadata (`run_meta.json`) for a run directory."""
+    path = Path(run_dir) / "run_meta.json"
+    obj = _read_json(path)
+    return obj if isinstance(obj, dict) else {}
+
+
+def write_run_meta(run_dir: str, tags: List[str], notes: str) -> str:
+    """Persist UI metadata (`tags`, `notes`) next to run artifacts."""
+    run_path = Path(run_dir)
+    if not run_path.exists():
+        raise FileNotFoundError(f"Run directory not found: {run_dir}")
+    clean_tags = [str(t).strip() for t in tags if str(t).strip()]
+    payload = {
+        "tags": clean_tags,
+        "notes": str(notes or ""),
+    }
+    meta_path = run_path / "run_meta.json"
+    meta_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+    return str(meta_path)
+
+
+def parse_tags(text: str) -> List[str]:
+    """Parse comma-separated tags string into a normalized list."""
+    return [x.strip() for x in str(text).split(",") if x.strip()]
+
+
 def discover_runs(root: str) -> List[Dict[str, Any]]:
     """
     Discover run directories that contain `summary.json`.
@@ -32,6 +59,7 @@ def discover_runs(root: str) -> List[Dict[str, Any]]:
         run_dir = summary_path.parent
         summary = _read_json(summary_path) or {}
         config = _read_json(run_dir / "config.json") or {}
+        meta = _read_json(run_dir / "run_meta.json") or {}
 
         metrics = summary.get("metrics") if isinstance(summary, dict) else {}
         overall = metrics.get("overall") if isinstance(metrics, dict) else {}
@@ -48,6 +76,8 @@ def discover_runs(root: str) -> List[Dict[str, Any]]:
             "success_rate": success_rate,
             "model_path": ((config.get("model") or {}).get("model_path") if isinstance(config, dict) else None),
             "dataset_path": ((config.get("dataset") or {}).get("path") if isinstance(config, dict) else None),
+            "tags": ", ".join(meta.get("tags", [])) if isinstance(meta.get("tags", []), list) else "",
+            "notes": str(meta.get("notes", "")) if isinstance(meta, dict) else "",
         }
         out.append(entry)
 

@@ -3,6 +3,11 @@ experiment:
   stage: "B4"
   mode: "real"
   output_root: "out_interp/b4"
+  validation_mode: "strict"   # strict | tolerant
+  seed: 0
+  reproducibility:
+    deterministic: true
+    include_pip_freeze: false
 
 model:
   # Absolute or repo-relative paths
@@ -15,10 +20,17 @@ probe:
   type: "linear"    # linear | mlp
   path: null         # optional .pt checkpoint for a trained probe
   hidden_dim: 256    # used if type=mlp
+  auto_train_if_missing: false  # if true and path is null, train probe from dataset activations
+  auto_train_epochs: 3
+  auto_train_lr: 0.001
+  auto_train_batch_size: 32
+  auto_train_max_examples: 256
+  auto_train_layer: 1
+  auto_train_position: "last"
 
 dataset:
   path: "data/othello/synthetic-image-othello-train.bin"
-  format: "bin"     # bin | pkl
+  format: "bin"     # auto | bin | pkl | pickle | npy | npz | json | jsonl
   split: "train"    # train | val | test
   block_size: 60
   batch_size: 16
@@ -49,6 +61,17 @@ batch:
     - name: "candidate"
       model_path: "out/ckpt_iter230000.pt"
       config_path: "config/config.yaml"
+
+matrix:
+  # B6 systematic grid runner (used by `real-matrix`)
+  type: "metrics_only"      # optional override for protocol.type
+  layers: [0, 1, 2, 3]
+  target_cells: [3, 5, 9, 12]
+  target_classes: [1, 2]
+  positions: ["last"]
+  seeds: [0, 1]
+  resume: true
+  continue_on_error: true
 
 report:
   top_k: 15
