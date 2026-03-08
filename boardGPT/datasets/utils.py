@@ -21,7 +21,10 @@ from typing import Tuple, List, Union
 
 import numpy as np
 import torch
-from transformers import PreTrainedTokenizerFast
+try:
+    from transformers import PreTrainedTokenizerFast
+except ModuleNotFoundError:  # pragma: no cover
+    from typing import Any as PreTrainedTokenizerFast
 
 from .game_dataset import GameDataset
 
@@ -185,4 +188,3 @@ def infinite_loader(
         # end for
     # end while
 # end def infinite_loader
-

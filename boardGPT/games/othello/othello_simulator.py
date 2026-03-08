@@ -31,6 +31,10 @@ from boardGPT.games.game_interface import GameInterface
 
 
 class OthelloBoard:
+    """
+    Mutable representation of an Othello board with helper utilities for move
+    generation and history tracking.
+    """
 
     def __init__(
             self,
@@ -806,6 +810,12 @@ class OthelloGame(GameInterface):
     # end load_moves
 
     def show(self):
+        """
+        Pretty-print the sequence of board states for the recorded moves.
+
+        Uses the project logging console to render the initial setup followed by
+        each intermediate position annotated with the move number and player.
+        """
         from boardGPT.utils.logging import console
 
         if not self.moves:

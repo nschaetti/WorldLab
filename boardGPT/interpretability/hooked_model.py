@@ -23,6 +23,14 @@ from collections import defaultdict
 
 
 class HookedModel:
+    """
+    Thin wrapper around a PyTorch module that records intermediate activations
+    and optionally patches them during the forward pass.
+
+    The wrapper manages a set of named forward hooks whose outputs are cached
+    on CPU for later inspection. Custom patch functions can be registered per
+    hook name to modify activations in-flight.
+    """
 
     def __init__(self, model: nn.Module):
         self.model = model
@@ -73,10 +81,16 @@ class HookedModel:
     # end def add_patch
 
     def clear_patches(self):
+        """
+        Remove all registered activation patch functions.
+        """
         self.patches.clear()
     # end def clear_patches
 
     def forward(self, *args, **kwargs):
+        """
+        Execute the wrapped model while keeping hooks active.
+        """
         return self.model(*args, **kwargs)
     # end def forward
 

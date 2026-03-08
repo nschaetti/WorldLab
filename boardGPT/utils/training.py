@@ -1,3 +1,7 @@
+"""
+Training utilities for configuring optimizers, distributed setup, and schedules.
+"""
+
 import inspect
 import json
 
@@ -369,4 +373,3 @@ def configure_optimizers(
 
     return optimizer, num_decay_params, num_nodecay_params
 # end def configure_optimizers
-

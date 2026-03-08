@@ -19,6 +19,13 @@ import torch.nn as nn
 
 
 class HookPoint(nn.Module):
+    """
+    Torch module that forwards its input while optionally applying a list of
+    user registered hook functions.
+
+    Hook functions receive the current tensor and may either return a modified
+    tensor or ``None`` to leave the stream unchanged.
+    """
 
     def __init__(self):
         super().__init__()
@@ -26,14 +33,29 @@ class HookPoint(nn.Module):
     # end def __init__
 
     def add_hook(self, fn):
+        """
+        Register a hook function that will be invoked during the forward pass.
+
+        Args:
+            fn (Callable[[torch.Tensor], Optional[torch.Tensor]]): Hook to run.
+        """
         self.fns.append(fn)  # end def add_hook
     # end def add_hook
 
     def clear(self):
+        """
+        Remove all registered hook functions.
+        """
         self.fns = []  # end def clear
     # end def clear
 
     def forward(self, x):
+        """
+        Apply registered hooks sequentially to the incoming tensor.
+
+        Each hook can optionally return a replacement tensor. If ``None`` is
+        returned the current tensor is left untouched.
+        """
         for fn in self.fns:
             rx = fn(x)
             if rx is not None:
@@ -44,5 +66,4 @@ class HookPoint(nn.Module):
     # end def forward
 # end class HookPoint
 # end class HookPoint
-
 

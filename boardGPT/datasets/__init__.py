@@ -24,6 +24,13 @@ from .utils import (
     infinite_loader,
     collate_fn_board
 )
+from .symbolic_stats import (
+    load_symbolic_pickle,
+    compute_cooccurrence_matrix,
+    top_cooccurring_pairs,
+    grouped_label_order,
+    plot_grouped_cooccurrence_matrix,
+)
 
 __all__ = [
     "BoardDataset",
@@ -32,6 +39,10 @@ __all__ = [
     "get_dataloader",
     "collate_fn",
     "collate_fn_board",
-    "infinite_loader"
+    "infinite_loader",
+    "load_symbolic_pickle",
+    "compute_cooccurrence_matrix",
+    "top_cooccurring_pairs",
+    "grouped_label_order",
+    "plot_grouped_cooccurrence_matrix",
 ]
-

@@ -1,4 +1,9 @@
+"""
+Lightweight probing heads for analysing transformer representations on boards.
 
+The probes reshape hidden states into board-shaped tensors to predict cell
+occupancy or move classes, enabling interpretability experiments.
+"""
 
 import torch
 import torch.nn as nn
@@ -150,7 +155,6 @@ class BoardMLPProbe(nn.Module):
     # end def forward
 
 # end class BoardMLPProbe
-
 
 
 

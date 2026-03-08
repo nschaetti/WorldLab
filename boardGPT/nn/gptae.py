@@ -1,4 +1,10 @@
+"""
+Variants of GPT-style autoencoders used for compressing board game sequences.
 
+The module implements configuration helpers, utilities for loading pretrained
+weights, and the main ``GPTAE`` model that maps tokenized games to latent
+representations and back.
+"""
 
 # Imports
 import yaml
@@ -15,6 +21,9 @@ from .block import Block
 
 @dataclass
 class GPTAEConfig:
+    """
+    Hyper-parameters controlling the GPT autoencoder architecture.
+    """
     vocab_size = 61
     block_size = 60
     n_embd = 512
@@ -29,6 +38,12 @@ class GPTAEConfig:
 
 # GPT Autoencodeur
 class GPTAE(nn.Module):
+    """
+    Transformer based autoencoder with a learned latent bottleneck.
+
+    The encoder and decoder share the same block configuration and the model
+    exposes helpers for loading pretrained weights and estimating compute cost.
+    """
 
     def __init__(
             self,
@@ -36,7 +51,10 @@ class GPTAE(nn.Module):
             use_flash: bool = True
     ):
         """
-        ...
+        Args:
+            config (GPTAEConfig): Architecture description.
+            use_flash (bool): Whether to enable flash-attention blocks when
+                available on the current device.
         """
         super().__init__()
 
@@ -193,6 +211,17 @@ class GPTAE(nn.Module):
             module: nn.Module,
             idx: torch.LongTensor
     ):
+        """
+        Run either the encoder or decoder Transformer stack on token indices.
+
+        Args:
+            module (nn.Module): Module dict that exposes ``wte``, ``wpe``, ``drop``,
+                ``h`` (a list of blocks) and ``ln_f``.
+            idx (torch.LongTensor): Token indices shaped ``(batch, seq_len)``.
+
+        Returns:
+            torch.Tensor: Final hidden states of shape ``(batch, seq_len, n_embd)``.
+        """
         device = idx.device
 
         # Batch size, sequence length
@@ -233,7 +262,13 @@ class GPTAE(nn.Module):
             x: torch.Tensor,
     ):
         """
-        ...
+        Decode latent embeddings with a Transformer decoder stack.
+
+        Args:
+            x (torch.Tensor): Latent token embeddings shaped ``(batch, seq_len, n_embd)``.
+
+        Returns:
+            torch.Tensor: Decoder hidden states shaped ``(batch, seq_len, n_embd)``.
         """
         device = x.device
 
@@ -375,5 +410,4 @@ class GPTAE(nn.Module):
     # end decode
 
 # end class GPTAE
-
 

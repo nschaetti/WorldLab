@@ -1,4 +1,9 @@
+"""
+Tokenizer construction utilities for the boardGPT project.
 
+The helpers generate a deterministic vocabulary of board positions and export a
+Hugging Face compatible tokenizer that can be reused across experiments.
+"""
 
 import os
 import json
@@ -72,5 +77,4 @@ def build_tokenizer(vocab: dict, output: str, save_path="tokenizer.json"):
 
     return fast_tok
 # end build_tokenizer
-
 

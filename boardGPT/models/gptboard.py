@@ -30,6 +30,12 @@ from boardGPT.nn import GPT
 
 
 class GameGPT(GPT):
+     """
+     GPT language model wrapper tailored to board game token streams.
+
+     Provides convenience helpers for autoregressive generation and
+     compatibility with activation recorders used in interpretability tooling.
+     """
 
      # Predict next
      def predict_next(

@@ -32,6 +32,10 @@ from boardGPT.nn import GPTAE
 
 
 class GameAutoEncoder(GPTAE):
+     """
+     Autoencoder specialized for board game move sequences with helpers for
+     encoding and decoding token indexes or human readable move strings.
+     """
 
      # Encode a list of indices
      def encode_indices(self, idx: torch.LongTensor) -> torch.Tensor:

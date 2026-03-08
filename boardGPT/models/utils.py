@@ -1,4 +1,6 @@
-
+"""
+Utility helpers for saving boardGPT model checkpoints and related metadata.
+"""
 
 # Imports
 import os
@@ -41,5 +43,4 @@ def save_checkpoint(
     torch.save(checkpoint, os.path.join(config['out_dir'], iter_filename))
     info(f"Also saved checkpoint as {iter_filename}")
 # end save_checkpoint
-
 
