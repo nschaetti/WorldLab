@@ -9,7 +9,7 @@ def test_generate_game_default():
     print("Testing generate_game with default parameters (Othello)...")
     
     # Generate a game with default parameters
-    game = worldlab.board.generate_game(max_length=10, full_game=False)
+    game = boardGPT.generate_game(max_length=10, full_game=False)
     
     # Get the moves from the game
     moves = game.get_moves()
@@ -25,7 +25,7 @@ def test_generate_game_explicit_othello():
     print("Testing generate_game with explicitly specified Othello game type...")
     
     # Generate a game with explicitly specified Othello game type
-    game = worldlab.board.generate_game(game="othello", max_length=10, full_game=False)
+    game = boardGPT.generate_game(game="othello", max_length=10, full_game=False)
     
     # Get the moves from the game
     moves = game.get_moves()
@@ -42,7 +42,7 @@ def test_generate_game_invalid_type():
     
     try:
         # Try to generate a game with an invalid game type
-        game = worldlab.board.generate_game(game="invalid_game", max_length=10, full_game=False)
+        game = boardGPT.generate_game(game="invalid_game", max_length=10, full_game=False)
         print("ERROR: Should have raised ValueError")
     except ValueError as e:
         print(f"Correctly raised ValueError: {e}")

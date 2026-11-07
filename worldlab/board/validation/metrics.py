@@ -21,31 +21,47 @@ from tqdm import tqdm
 from transformers import PreTrainedTokenizerFast
 
 
-def is_valid(move: str, previous_moves: List[str]) -> bool:
+def is_valid(move, previous_moves: List[str]) -> bool:
     """
     Check if a move is valid given a sequence of previous moves.
     
     Args:
-        move (str): The move to check.
-        previous_moves (List[str]): The sequence of previous moves.
+        move (str | int): The move to check, as a notation string (e.g., 'e4')
+            or a move ID (1-60, 0 being the BOS token).
+        previous_moves (List[str]): The sequence of previous moves (notations or IDs).
         
     Returns:
         bool: True if the move is valid, False otherwise
     """
-    from worldlab.board.games.othello.othello_simulator import OthelloGame
+    from worldlab.board.games.othello.othello_simulator import (
+        OthelloGame,
+        create_move_mapping
+    )
 
     # Convert the move_id to move notation
     if move == "BOS":  # BOS token is not a valid move
         return False
     # end if
-    
+
+    move_to_id = create_move_mapping()
+    id_to_move = {v: k for k, v in move_to_id.items()}
+
+    def notations(tokens):
+        for token in tokens:
+            if token == "BOS" or token == 0:  # Skip BOS tokens
+                continue
+            # end if
+            yield id_to_move.get(token) if isinstance(token, int) else token
+        # end for
+    # end notations
+
     # Create a new Othello game
     game = OthelloGame()
     
     # Apply all previous moves to the game
-    for move in previous_moves:
+    for prev in notations(previous_moves):
         # Convert move notation to coordinates
-        row, col = game.notation_to_coords(move)
+        row, col = game.notation_to_coords(prev)
         
         # Make the move
         success = game.make_move(row, col)
@@ -56,7 +72,8 @@ def is_valid(move: str, previous_moves: List[str]) -> bool:
     # end for
     
     # Check if the new move is valid
-    row, col = game.notation_to_coords(move)
+    notation = id_to_move.get(move) if isinstance(move, int) else move
+    row, col = game.notation_to_coords(notation)
     return game.is_valid_move(row, col)  # end def is_valid
 # end def is_valid
 

@@ -12,7 +12,7 @@ OMP_NUM_THREADS=2 worldlab-lejepa train --preset smoke --device cpu --output run
 worldlab-lejepa train --preset imagenette-minimal --set data_root=data/lejepa/imagenette --output runs/imagenette
 ```
 
-The smoke run uses torchvision FakeData. The Imagenette recipe follows the official example with 128 px crops, ViT-S/8, 4 views, projection dimension 16, 256 slices, 800 epochs and λ = 0.02. Set `--set download=false` to use a prepared ImageFolder dataset. The paper's ImageNet-10 benchmark uses a larger subset than the HF Imagenette recipe. Supply the paper's split as an ImageFolder when available.
+The smoke run uses torchvision FakeData. The Imagenette recipe follows the official example with 128 px crops, ViT-S/8, 4 views, projection dimension 16, 256 slices, 800 epochs and λ = 0.02. Set `--set download=false` to use a prepared ImageFolder dataset. The paper's ImageNet-10 benchmark uses a larger subset than the torchvision Imagenette recipe. Supply the paper's split as an ImageFolder when available.
 
 Use `--config file.yaml` to load overrides on top of a preset and repeat `--set key=value` for individual overrides. Resolved settings and package versions go into `run.json`, epoch records into `metrics.jsonl`, and resumable state into `last.pt`. Resume with the same command and add `--resume`. Resumption is at epoch boundaries with the same configuration and world size. Metrics are fractions in `[0, 1]`.
 
@@ -28,7 +28,7 @@ torchrun --standalone --nproc-per-node=4 -m worldlab.experiments.lejepa train \
 | Dataset key | Layout or source |
 |---|---|
 | `inet1k`, `inet100`, `galaxy10`, `imagefolder` | ImageFolder with `train/<class>/...` and `val/<class>/...`. Both splits must have the same class names. |
-| `imagenette` | Local ImageFolder or `frgfm/imagenette` with `160px` and `--set download=true`. |
+| `imagenette` | Local ImageFolder or torchvision `Imagenette` (`160px` variant) with `--set download=true`. |
 | `cifar10`, `cifar100`, `flowers102`, `food101`, `dtd`, `aircraft`, `pets` | Torchvision splits with optional download. Local ImageFolder splits also work. |
 | `cars` | Prepared ImageFolder recommended. |
 | `fake` | Tiny generated RGB dataset for smoke tests. |

@@ -19,7 +19,13 @@ TEXT_ARCHITECTURES = {
 class TextEncoder(nn.Module):
     """Randomly initialized BERT with CLS pooling or causal mean pooling."""
 
-    def __init__(self, vocab_size: int, pad_id: int, *, arch: str = "small", causal: bool = False):
+    def __init__(
+            self,
+            vocab_size: int,
+            pad_id: int, *,
+            arch: str = "small",
+            causal: bool = False
+    ):
         super().__init__()
         from transformers import BertConfig, BertModel
 

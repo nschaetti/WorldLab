@@ -8,6 +8,8 @@ from .config import load_config, presets
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
+
+    # Training part
     training = commands.add_parser("train", help="pretrain and evaluate an online linear probe")
     training.add_argument("--preset", choices=presets())
     training.add_argument("--config", help="YAML overrides for a preset")
@@ -16,6 +18,7 @@ def main():
     training.add_argument("--device", default="auto")
     training.add_argument("--resume", action="store_true")
 
+    # Training probes
     transfer = commands.add_parser("probe", help="train a frozen probe or fine-tune a checkpoint")
     source = transfer.add_mutually_exclusive_group(required=True)
     source.add_argument("--checkpoint")
@@ -39,6 +42,7 @@ def main():
 
     from .matrix import SUITES, TRANSFER_SUITES
 
+    # ...
     matrix = commands.add_parser("matrix", help="list or execute indexed paper runs")
     matrix.add_argument("suite", choices=SUITES)
     matrix.add_argument("--data-root", default="data/lejepa")
@@ -47,6 +51,7 @@ def main():
     matrix.add_argument("--index", type=int)
     matrix.add_argument("--resume", action="store_true")
 
+    # ...
     downstream = commands.add_parser("transfer-matrix", help="list or execute downstream evaluation runs")
     downstream.add_argument("suite", choices=TRANSFER_SUITES)
     downstream.add_argument("--pretrained-runs", required=True)
@@ -64,23 +69,28 @@ def main():
         report = commands.add_parser(name)
         report.add_argument("--runs", required=True)
         report.add_argument("--output", required=True)
+    # end for
 
+    # Timing experiments
     timing = commands.add_parser("timing", help="benchmark the Table 6 workloads")
     timing.add_argument("--device", default="auto")
     timing.add_argument("--output", required=True)
     timing.add_argument("--dimension", type=int, default=512)
     timing.add_argument("--repeats", type=int, default=10)
 
+    # Projection experiments
     synthetic = commands.add_parser("synthetic", help="run the Figures 6–7 projection experiment")
     synthetic.add_argument("--device", default="auto")
     synthetic.add_argument("--output", required=True)
     synthetic.add_argument("--steps", type=int, default=500)
     synthetic.add_argument("--seed", type=int, default=0)
 
+    # Quadrature experiments
     quadrature = commands.add_parser("quadrature", help="compare Epps–Pulley integration with its exact integral")
     quadrature.add_argument("--output", required=True)
     quadrature.add_argument("--seed", type=int, default=0)
 
+    # Visualize experiments
     spatial = commands.add_parser("visualize", help="render ViT patch PCA and CLS attention")
     spatial.add_argument("--checkpoint", required=True)
     spatial.add_argument("--output", required=True)
@@ -91,11 +101,18 @@ def main():
     args = parser.parse_args()
     if args.command == "train":
         from .train import train
-
-        train(load_config(args.preset, args.config, args.set), args.output, args.device, args.resume)
+        train(
+            config=load_config(
+                preset=args.preset,
+                path=args.config,
+                overrides=args.set
+            ),
+            output=args.output,
+            requested_device=args.device,
+            resume=args.resume
+        )
     elif args.command == "probe":
         from .probe import probe
-
         probe(args)
     elif args.command == "matrix":
         from .matrix import run_matrix

@@ -45,23 +45,6 @@ def _folder(root, train):
     return datasets.ImageFolder(split)
 
 
-class HFImagenette(Dataset):
-    def __init__(self, root, train):
-        from datasets import load_dataset
-
-        self.dataset = load_dataset(
-            "frgfm/imagenette", "160px", split="train" if train else "validation", cache_dir=str(root),
-        )
-        self.classes = self.dataset.features["label"].names
-
-    def __len__(self):
-        return len(self.dataset)
-
-    def __getitem__(self, index):
-        row = self.dataset[index]
-        return row["image"], row["label"]
-
-
 def image_dataset(name, root, train, download=False):
     """Load official torchvision splits or user-supplied ImageFolder splits."""
     root = Path(root).expanduser()
@@ -71,7 +54,7 @@ def image_dataset(name, root, train, download=False):
     if (root / "train").is_dir() or name in {"inet1k", "inet100", "galaxy10", "imagefolder"}:
         return _folder(root, train)
     if name == "imagenette":
-        return HFImagenette(root, train) if download else _folder(root, train)
+        return datasets.Imagenette(root, split="train" if train else "val", size="160px", download=download)
     if name in {"cifar10", "cifar100"}:
         factory = datasets.CIFAR10 if name == "cifar10" else datasets.CIFAR100
         return factory(root, train=train, download=download)
@@ -108,8 +91,9 @@ def targets(dataset):
         values = getattr(dataset, key, None)
         if values is not None:
             return values
-    if isinstance(dataset, HFImagenette):
-        return dataset.dataset["label"]
+    samples = getattr(dataset, "_samples", None)
+    if samples is not None:  # torchvision.datasets.Imagenette
+        return [label for _, label in samples]
     return [dataset[index][1] for index in range(len(dataset))]
 
 

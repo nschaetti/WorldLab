@@ -32,6 +32,13 @@ import os
 import seaborn as sns
 import random
 
+# Othello visualization helpers live in the games package; re-export them here
+# for backwards compatibility (`from worldlab.board.utils.viz import show_othello`).
+from ..games.othello.viz import (
+    show_othello,
+    plot_othello_game,
+)
+
 
 # Function to detect if code is running in Jupyter notebook
 def is_jupyter() -> bool:

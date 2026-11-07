@@ -32,6 +32,6 @@ def test_move_ids_to_notation_and_board_labels_match_reference():
 
     board_labels = move_ids_to_board_labels(move_ids, skip_bos=True)
     reference = game_to_board(moves)
-    assert board_labels == reference
+    assert board_labels.tolist() == reference.tolist()
     assert len(board_labels) == OTHELLO_NUM_BOARD_CELLS
     assert set(torch.tensor(board_labels).tolist()).issubset({0, 1, 2})

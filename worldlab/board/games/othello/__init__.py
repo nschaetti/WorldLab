@@ -16,10 +16,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
 from .othello_simulator import (
+    OthelloBoard,
     OthelloGame,
     create_id_to_move_mapping,
     create_move_mapping,
     convert_ids_to_notation,
+    extract_game_by_index,
+    extract_games_by_length,
     load_games,
     generate_othello_game
 )
@@ -31,10 +34,13 @@ from .othello_utils import (
 )
 
 __all__ = [
+    "OthelloBoard",
     "OthelloGame",
     "create_id_to_move_mapping",
     "create_move_mapping",
     "convert_ids_to_notation",
+    "extract_game_by_index",
+    "extract_games_by_length",
     "load_games",
     "generate_othello_game",
     "game_to_board",

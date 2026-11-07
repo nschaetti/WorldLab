@@ -42,6 +42,7 @@ from .training import (
     configure_optimizers
 )
 from .viz import plot_attention_matrix, plot_heads_attention, show_linear_probe_samples
+from ..games.othello.viz import show_othello, plot_othello_game
 from .logging import (
     info, warning, error, debug, success,
     print_exception, log_exception, console, train_log, eval_log
@@ -57,6 +58,8 @@ __all__ = [
     "plot_attention_matrix",
     "plot_heads_attention",
     "show_linear_probe_samples",
+    "show_othello",
+    "plot_othello_game",
     "info", "warning", "error", "debug", "success",
     "print_exception", "log_exception", "console", "train_log",
     "eval_log"

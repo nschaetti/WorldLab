@@ -83,18 +83,28 @@ def read_yaml(path):
 
 def presets():
     return read_yaml(Path(__file__).with_name("presets.yaml"))
+# end def presets
 
 
-def load_config(preset=None, path=None, overrides=()):
+def load_config(
+        preset=None,
+        path=None,
+        overrides=()
+) -> RunConfig:
     values = dict(presets()[preset]) if preset else {}
     if path:
         values.update(read_yaml(path))
+    # end if
     for override in overrides:
         key, separator, value = override.partition("=")
         if not separator:
             raise ValueError(f"Expected KEY=VALUE, got {override}")
+        # end if
         values[key] = yaml.safe_load(value)
+    # end for
     unknown = values.keys() - {field.name for field in fields(RunConfig)}
     if unknown:
         raise ValueError(f"Unknown configuration keys: {', '.join(sorted(unknown))}")
+    # end if
     return RunConfig(**values)
+# end def load_config
