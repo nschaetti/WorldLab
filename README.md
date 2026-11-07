@@ -19,6 +19,8 @@ python -m worldlab.experiments.lejepa train --preset smoke --device cpu --output
 
 The environment uses Python 3.12 and installs [requirements.txt](requirements.txt) for LeJEPA, LeWorldModel offline training, PRH and BoardGPT. Run the Python commands from the repository root so they can import the source directly.
 
+If Miniconda prompts for the default Anaconda channels, run `CONDA_DEFAULT_CHANNELS='' conda env create -f environment.yml` on Linux or macOS to use conda-forge for this command.
+
 If you already have a Conda environment, run `python -m pip install -r requirements.txt` inside it. To choose a specific CPU or CUDA build, install the matching PyTorch and torchvision wheels first, then install the requirements. Use the [PyTorch installer](https://pytorch.org/get-started/locally/) to select the wheel index and check CUDA with `python -c "import torch; print(torch.cuda.is_available())"`.
 
 For LeWorldModel simulator evaluations, add `python -m pip install -r requirements-control.txt`.
