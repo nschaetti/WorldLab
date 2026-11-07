@@ -11,10 +11,10 @@ from scipy.stats import spearmanr
 
 from worldlab.nn import SIGReg
 from worldlab.training import optimizer_step
+from worldlab.training.runtime import get_device
 
 from .data import evaluation_transform
 from .probe import load_encoder
-from .train import get_device
 from .vision import VisionTransformer, set_unfused_attention
 
 

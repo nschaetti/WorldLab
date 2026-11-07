@@ -1,6 +1,11 @@
 """Reusable PyTorch modules for world models."""
 
 from .lejepa import LeJEPA, LeJEPAObjective, LeJEPAOutput, ProjectionMLP
+from .lewm import ActionConditionedPredictor, ActionEmbedder, LeWorldModel, LeWMOutput, LeWMProjection
 from .sigreg import EppsPulley, SIGReg
 
-__all__ = ["EppsPulley", "LeJEPA", "LeJEPAObjective", "LeJEPAOutput", "ProjectionMLP", "SIGReg"]
+__all__ = [
+    "ActionConditionedPredictor", "ActionEmbedder", "EppsPulley", "LeJEPA",
+    "LeJEPAObjective", "LeJEPAOutput", "LeWMOutput", "LeWMProjection",
+    "LeWorldModel", "ProjectionMLP", "SIGReg",
+]

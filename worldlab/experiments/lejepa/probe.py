@@ -12,13 +12,15 @@ from torch.nn import functional as F
 from torch.utils.data import DataLoader, TensorDataset
 
 from worldlab.training import optimizer_step, warmup_cosine_lr
+from worldlab.training.runtime import atomic_write, autocast, get_device, seed_epoch
 
 from .config import RunConfig
 from .data import (
     TransformedImages, _augment, check_splits, class_count, evaluation_transform,
     few_shot_subset, image_dataset,
 )
-from .train import atomic_write, autocast, evaluate, get_device, seed_epoch
+
+from .train import evaluate
 from .vision import VisionEncoder
 
 
