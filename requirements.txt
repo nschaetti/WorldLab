@@ -1,0 +1,57 @@
+# WorldLab - consolidated dependencies (superset of all pyproject extras)
+# Install editably (recommended):
+#   pip install -e . -r requirements.txt
+#
+# CUDA wheels (Linux, PyTorch index):
+#   The lines below use the cu128 CUDA build.
+#   For CPU-only, remove the --extra-index-url line. On Linux, PyPI wheels
+#   already bundle CUDA support; this pin just makes the variant explicit.
+#
+--extra-index-url https://download.pytorch.org/whl/cu128
+
+# --- Core (all projects) ---
+torch>=2.5
+torchvision>=0.20
+numpy>=1.26
+PyYAML>=6
+filelock>=3
+scipy>=1.11
+pillow>=10
+tqdm
+
+# --- LeJEPA / PRH ---
+timm>=1.0.20,<1.1
+
+# --- LeWorldModel ---
+transformers>=4.50,<5
+tokenizers
+huggingface-hub
+h5py>=3.10
+hdf5plugin>=5
+scikit-learn>=1.3
+
+# --- LeWM control stack ---
+stable-worldmodel==0.1.1
+pygame
+pymunk
+shapely
+dm-control
+ogbench
+mujoco<3.12
+opencv-python-headless
+
+# --- Board (BoardGPT) ---
+rich
+matplotlib
+seaborn
+safetensors
+wandb
+torchmetrics
+
+# --- UI / notebooks / tests ---
+streamlit
+IPython
+pandas
+faiss-cpu
+umap-learn
+pytest
