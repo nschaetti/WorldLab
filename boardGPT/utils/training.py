@@ -7,12 +7,13 @@ import json
 
 # Imports
 import os
-import math
 import yaml
 from contextlib import nullcontext
 from typing import List, Dict, Any
 
 import torch
+
+from worldlab.training import warmup_cosine_lr
 from torch.distributed import init_process_group
 
 # BoardGPT
@@ -293,32 +294,11 @@ def setup_training_environment(config):
 
 
 def get_lr(it, config):
-    """
-    Get learning rate for the current iteration according to the schedule.
-
-    Args:
-        it (int): Current iteration number
-        config (TrainingConfig): Configuration object
-
-    Returns:
-        float: Learning rate for the current iteration
-    """
-    # 1) Linear warmup for warmup_iters steps
-    if it < config['warmup_iters']:
-        return config['learning_rate'] * (it + 1) / (config['warmup_iters'] + 1)
-    # end if
-
-    # 2) If it > lr_decay_iters, return min learning rate
-    if it > config['lr_decay_iters']:
-        return config['min_lr']
-    # end if
-
-    # 3) In between, use cosine decay down to min learning rate
-    decay_ratio = (it - config['warmup_iters']) / (config['lr_decay_iters'] - config['warmup_iters'])
-    assert 0 <= decay_ratio <= 1
-    coeff = 0.5 * (1.0 + math.cos(math.pi * decay_ratio))  # Coeff ranges 0..1
-    return config['min_lr'] + coeff * (config['learning_rate'] - config['min_lr'])
-# end def get_lr
+    """The original BoardGPT schedule, using the shared warmup and cosine policy."""
+    return warmup_cosine_lr(
+        it, config['learning_rate'], config['min_lr'],
+        config['warmup_iters'], config['lr_decay_iters'],
+    )
 
 
 def configure_optimizers(

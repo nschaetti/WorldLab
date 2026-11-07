@@ -1,0 +1,72 @@
+imagenette-minimal:
+  dataset: imagenette
+  download: true
+  backbone: vit_small_patch8_224
+  resolution: 128
+  epochs: 800
+  batch_size: 256
+  global_views: 4
+  augment: minimal
+  weight: 0.02
+  projection_dim: 16
+  num_slices: 256
+  t_max: 3.0
+  chunk_size: 64
+  lr: 0.002
+  min_lr: 0.001
+  weight_decay: 0.05
+  probe_layers: 0
+  probe_weight_decay: 0.0000001
+  drop_path_rate: 0.1
+
+inet100:
+  dataset: inet100
+  backbone: resnet50
+  global_views: 8
+
+inet1k-vit-large: &inet1k_vit
+  dataset: inet1k
+  backbone: vit_large_patch14_224
+  epochs: 100
+  resolution: 238
+  local_resolution: 98
+  global_views: 2
+  local_views: 6
+  projection_dim: 512
+  weight_decay: 0.05
+  drop_path_rate: 0.1
+  patch_mask_ratio: 0.3
+  activation_checkpointing: true
+
+inet1k-convnext-huge:
+  dataset: inet1k
+  backbone: convnextv2_huge
+  epochs: 100
+  weight_decay: 0.05
+  activation_checkpointing: true
+
+inet1k-vit-gigantic:
+  <<: *inet1k_vit
+  backbone: vit_gigantic_patch14_224
+  batch_size: 128
+  eval_every: 5
+
+in-domain:
+  dataset: galaxy10
+  backbone: resnet18
+  epochs: 400
+
+smoke:
+  dataset: fake
+  backbone: resnet18
+  precision: fp32
+  epochs: 1
+  batch_size: 4
+  workers: 0
+  resolution: 32
+  global_views: 2
+  embedding_dim: 16
+  projection_dim: 8
+  projector_width: 32
+  num_slices: 8
+  num_points: 5
