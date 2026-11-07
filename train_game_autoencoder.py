@@ -17,6 +17,8 @@ import torch
 from torch.nn.parallel import DistributedDataParallel as DDP
 from torch.distributed import init_process_group, destroy_process_group
 
+from worldlab.training import optimizer_step
+
 from transformers import PreTrainedTokenizerFast
 
 # BoardGPT
@@ -422,18 +424,9 @@ def main():
             scaler.scale(loss).backward()
         # end for
 
-        # Clip the gradient if grad_clip is set
-        if config['grad_clip'] != 0.0:
-            scaler.unscale_(optimizer)
-            torch.nn.utils.clip_grad_norm_(model.parameters(), config['grad_clip'])
-        # end if
-
-        # Step the optimizer and scaler if training in fp16
-        scaler.step(optimizer)
-        scaler.update()
-
-        # Flush the gradients as soon as we can, no need for this memory anymore
-        optimizer.zero_grad(set_to_none=True)
+        optimizer_step(
+            optimizer, scaler=scaler, parameters=model.parameters(), grad_clip=config['grad_clip']
+        )
 
         # Timing and logging
         t1 = time.time()

@@ -37,7 +37,6 @@ import wandb
 import os
 import time
 import random
-import math
 import pickle
 import argparse
 import yaml
@@ -48,6 +47,9 @@ import numpy as np
 import torch
 from torch.nn.parallel import DistributedDataParallel as DDP
 from torch.distributed import init_process_group, destroy_process_group
+
+from worldlab.training import optimizer_step
+from boardGPT.utils.training import get_lr
 
 from tokenizers import Tokenizer
 from tokenizers.models import WordLevel
@@ -766,35 +768,6 @@ def estimate_loss(
 # end def estimate_loss
 
 
-def get_lr(it, config):
-    """
-    Get learning rate for the current iteration according to the schedule.
-    
-    Args:
-        it (int): Current iteration number
-        config (TrainingConfig): Configuration object
-        
-    Returns:
-        float: Learning rate for the current iteration
-    """
-    # 1) Linear warmup for warmup_iters steps
-    if it < config['warmup_iters']:
-        return config['learning_rate'] * (it + 1) / (config['warmup_iters'] + 1)
-    # end if
-    
-    # 2) If it > lr_decay_iters, return min learning rate
-    if it > config['lr_decay_iters']:
-        return config['min_lr']
-    # end if
-    
-    # 3) In between, use cosine decay down to min learning rate
-    decay_ratio = (it - config['warmup_iters']) / (config['lr_decay_iters'] - config['warmup_iters'])
-    assert 0 <= decay_ratio <= 1
-    coeff = 0.5 * (1.0 + math.cos(math.pi * decay_ratio))  # Coeff ranges 0..1
-    return config['min_lr'] + coeff * (config['learning_rate'] - config['min_lr'])
-# end def get_lr
-
-
 def setup_optimizer(
         model: GPT,
         config,
@@ -1045,19 +1018,10 @@ def main():
             scaler.scale(loss).backward()
         # end for
         
-        # Clip the gradient if grad_clip is set
-        if config['grad_clip'] != 0.0:
-            scaler.unscale_(optimizer)
-            torch.nn.utils.clip_grad_norm_(model.parameters(), config['grad_clip'])
-        # end if
-        
-        # Step the optimizer and scaler if training in fp16
-        scaler.step(optimizer)
-        scaler.update()
-        
-        # Flush the gradients as soon as we can, no need for this memory anymore
-        optimizer.zero_grad(set_to_none=True)
-        
+        optimizer_step(
+            optimizer, scaler=scaler, parameters=model.parameters(), grad_clip=config['grad_clip']
+        )
+
         # Timing and logging
         t1 = time.time()
         dt = t1 - t0
