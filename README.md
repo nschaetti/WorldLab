@@ -4,6 +4,7 @@ Research code for world models, from autoregressive board-game transformers to j
 
 - **LeJEPA** lives in `worldlab.nn`. The [reproduction guide](docs/lejepa.md) covers pretraining, linear probes, fine-tuning and experiment matrices.
 - **LeWorldModel** adds action-conditioned latent dynamics and planning. See the [reproduction guide](docs/lewm.md) for training, control and physical diagnostics.
+- **Platonic Representation Hypothesis** compares independently trained vision and text representations. See the [PRH experiment guide](docs/prh.md).
 - **BoardGPT** lives in `boardGPT`. See the [training configuration](README_config.md) and [interpretability toolkit](README_interpretability.md).
 
 ```bash
