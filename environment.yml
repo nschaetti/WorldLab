@@ -1,0 +1,10 @@
+name: worldlab
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  - python=3.12
+  - pip
+  - zstd
+  - pip:
+      - -r requirements.txt

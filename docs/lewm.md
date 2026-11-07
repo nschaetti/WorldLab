@@ -4,11 +4,11 @@ This implementation follows Maes et al., [LeWorldModel v3](https://arxiv.org/abs
 
 ## Install and prepare data
 
-```bash
-python -m pip install -e '.[lewm,lewm-control]'
-```
+The [Conda environment](../README.md#run-from-the-checkout) covers offline training and diagnostics. From the repository root, add the simulator dependencies for control evaluations. This integration uses stable-worldmodel 0.1.1.
 
-The `lewm` extra alone covers offline training and diagnostics. `lewm-control` adds the simulators. The optional simulator integration uses the stable-worldmodel 0.1.1 release.
+```bash
+python -m pip install -r requirements-control.txt
+```
 
 Download the HDF5 archives from the [authors' Hugging Face collection](https://huggingface.co/collections/quentinll/lewm-69c58f5e20580628114d20c4). Decompress the Push-T HDF5 with `zstd -d` and the `.tar.zst` archives with `tar --zstd -xf`. For the matrices, organize them under the shared data root as follows. Direct commands accept any valid path.
 
@@ -24,9 +24,9 @@ The loader expects `pixels`, `action`, `ep_len` and `ep_offset`. It reads only c
 ## Train and evaluate
 
 ```bash
-worldlab-lewm train --preset pusht --data /datasets/lewm/pusht_expert_train.h5 \
+python -m worldlab.experiments.lewm train --preset pusht --data /datasets/lewm/pusht_expert_train.h5 \
     --device cuda --output runs/lewm/pusht
-worldlab-lewm control --environment pusht --data /datasets/lewm/pusht_expert_train.h5 \
+python -m worldlab.experiments.lewm control --environment pusht --data /datasets/lewm/pusht_expert_train.h5 \
     --checkpoint runs/lewm/pusht --device cuda --output runs/lewm/pusht/control.json
 ```
 
@@ -39,9 +39,9 @@ Released checkpoints load directly from a directory containing the model repo's 
 ## Paper runs
 
 ```bash
-worldlab-lewm matrix main --data-root /datasets/lewm --output runs/lewm
-worldlab-lewm matrix main --data-root /datasets/lewm --output runs/lewm --index 0 --run train
-worldlab-lewm matrix main --data-root /datasets/lewm --output runs/lewm --index 0 --run control
+python -m worldlab.experiments.lewm matrix main --data-root /datasets/lewm --output runs/lewm
+python -m worldlab.experiments.lewm matrix main --data-root /datasets/lewm --output runs/lewm --index 0 --run train
+python -m worldlab.experiments.lewm matrix main --data-root /datasets/lewm --output runs/lewm --index 0 --run control
 ```
 
 | Result | WorldLab entry point |
@@ -57,11 +57,11 @@ worldlab-lewm matrix main --data-root /datasets/lewm --output runs/lewm --index 
 | Fig. 18 | Per-epoch losses in `metrics.jsonl`. |
 
 ```bash
-worldlab-lewm probe --checkpoint checkpoints/pusht --data /datasets/lewm/pusht_expert_train.h5 \
+python -m worldlab.experiments.lewm probe --checkpoint checkpoints/pusht --data /datasets/lewm/pusht_expert_train.h5 \
     --target agent=state:0,1 --target block=state:2,3 --target angle=state:4 \
     --tsne 1000 --output results/pusht-probes
 
-worldlab-lewm surprise --checkpoint checkpoints/pusht --data reference.h5 \
+python -m worldlab.experiments.lewm surprise --checkpoint checkpoints/pusht --data reference.h5 \
     --visual recolored.h5 --physical teleported.h5 --perturbation-step 50 \
     --stats-data /datasets/lewm/pusht_expert_train.h5 --output results/pusht-surprise
 ```

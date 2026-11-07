@@ -1,0 +1,9 @@
+# Optional simulator stack for LeWorldModel control evaluations.
+-r requirements.txt
+stable-worldmodel==0.1.1
+pymunk
+shapely
+dm-control
+ogbench
+mujoco<3.12
+opencv-python-headless

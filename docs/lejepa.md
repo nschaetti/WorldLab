@@ -4,12 +4,11 @@ Implementation of Balestriero and LeCun, [arXiv:2511.08544v3](https://arxiv.org/
 
 ## Installation and first runs
 
-Install a PyTorch build for your hardware, then install the experiment dependencies.
+Create the [Conda environment](../README.md#run-from-the-checkout) and run the commands from the repository root.
 
 ```bash
-python -m pip install -e '.[lejepa,imagenette]'
-OMP_NUM_THREADS=2 worldlab-lejepa train --preset smoke --device cpu --output runs/smoke
-worldlab-lejepa train --preset imagenette-minimal --set data_root=data/lejepa/imagenette --output runs/imagenette
+OMP_NUM_THREADS=2 python -m worldlab.experiments.lejepa train --preset smoke --device cpu --output runs/smoke
+python -m worldlab.experiments.lejepa train --preset imagenette-minimal --set data_root=data/lejepa/imagenette --output runs/imagenette
 ```
 
 The smoke run uses torchvision FakeData. The Imagenette recipe follows the official example with 128 px crops, ViT-S/8, 4 views, projection dimension 16, 256 slices, 800 epochs and λ = 0.02. Set `--set download=false` to use a prepared ImageFolder dataset. The paper's ImageNet-10 benchmark uses a larger subset than the HF Imagenette recipe. Supply the paper's split as an ImageFolder when available.
@@ -38,11 +37,11 @@ For matrices, `--data-root` is the common parent with one subdirectory per datas
 ## Pretraining and evaluation
 
 ```bash
-worldlab-lejepa matrix table7-lambda-views --data-root /datasets --output runs
-worldlab-lejepa matrix table7-lambda-views --data-root /datasets --output runs --index 0
-worldlab-lejepa summarize --runs runs --output results/pretraining.csv
+python -m worldlab.experiments.lejepa matrix table7-lambda-views --data-root /datasets --output runs
+python -m worldlab.experiments.lejepa matrix table7-lambda-views --data-root /datasets --output runs --index 0
+python -m worldlab.experiments.lejepa summarize --runs runs --output results/pretraining.csv
 
-worldlab-lejepa probe --checkpoint runs/imagenette/last.pt \
+python -m worldlab.experiments.lejepa probe --checkpoint runs/imagenette/last.pt \
     --dataset cifar10 --data-root /datasets/cifar10 --download \
     --shots 10 --seed 0 --mode linear --output runs/probe-cifar10-10
 ```
@@ -65,11 +64,11 @@ Without `--index`, a matrix prints an indexed JSON Lines manifest. Each index is
 For the Galaxy10 transfer matrix, pretrain the four LeJEPA encoders first. For example, use `train --preset in-domain --set backbone=resnet18 --set data_root=/datasets/galaxy10 --output runs/galaxy10/resnet18` and repeat with `convnextv2_nano`, `levit_128` and `resnet34`. The transfer matrix looks for these checkpoints under `--pretrained-runs runs/galaxy10`.
 
 ```bash
-worldlab-lejepa transfer-matrix table2-transfer --pretrained-runs runs \
+python -m worldlab.experiments.lejepa transfer-matrix table2-transfer --pretrained-runs runs \
     --data-root /datasets --output runs/transfer
-worldlab-lejepa summarize-probes --runs runs/transfer --output results/transfer.csv
-worldlab-lejepa correlate --runs runs/figure11-correlation --output results/correlation.csv
-worldlab-lejepa quadrature --output results/quadrature.csv
+python -m worldlab.experiments.lejepa summarize-probes --runs runs/transfer --output results/transfer.csv
+python -m worldlab.experiments.lejepa correlate --runs runs/figure11-correlation --output results/correlation.csv
+python -m worldlab.experiments.lejepa quadrature --output results/quadrature.csv
 ```
 
 ### Settings and limits

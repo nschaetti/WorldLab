@@ -12,13 +12,14 @@ The paper recipe predicts the mean of the global views from each view. It uses t
 
 ## Train independent models
 
+Create the [Conda environment](../README.md#run-from-the-checkout) and run the commands from the repository root.
+
 ```bash
-python -m pip install -e '.[prh]'
 data=/datasets/flickr30k
 
 for arm in image good-text bad-text next-token paired-next-token; do
-    worldlab-prh train --preset "$arm" --data "$data" --output "runs/prh/$arm"
-    worldlab-prh embed --checkpoint "runs/prh/$arm" --data "$data" \
+    python -m worldlab.experiments.prh train --preset "$arm" --data "$data" --output "runs/prh/$arm"
+    python -m worldlab.experiments.prh embed --checkpoint "runs/prh/$arm" --data "$data" \
         --layers --output "runs/prh/$arm.pt"
 done
 ```
@@ -45,10 +46,10 @@ The default Flickr preset uses 200 epochs, AdamW, a batch of 256, 2 global and 6
 ## Measure alignment
 
 ```bash
-worldlab-prh align runs/prh/image.pt runs/prh/good-text.pt \
+python -m worldlab.experiments.prh align runs/prh/image.pt runs/prh/good-text.pt \
     --rotation runs/prh/rotation.pt --output runs/prh/alignment.json
-worldlab-prh benchmark runs/prh/image.pt runs/prh/good-text.pt --metric mknn
-worldlab-prh nuisance --checkpoint runs/prh/good-text --data "$data" --dimensions 32 128
+python -m worldlab.experiments.prh benchmark runs/prh/image.pt runs/prh/good-text.pt --metric mknn
+python -m worldlab.experiments.prh nuisance --checkpoint runs/prh/good-text --data "$data" --dimensions 32 128
 ```
 
 - `align` joins caches by scene ID. It fits a Procrustes map on validation scenes and computes mutual k-NN, R@1, R@5, whitened retrieval and cosine on test scenes. Use `--features projection` for projector outputs. The saved map can be applied with `Rotation(**torch.load(path, weights_only=True))`.
@@ -57,8 +58,8 @@ worldlab-prh nuisance --checkpoint runs/prh/good-text --data "$data" --dimension
 - `theory` checks the spectral mismatch bound on random finite worlds. `spectral_solution` solves the whitened population objective, and `coverage_bound` measures how the observation kernel couples scene and nuisance directions.
 
 ```bash
-worldlab-prh theory --cases 300
-worldlab-prh scaling --data /path/to/prh-proof/paper/data/phase_grid.csv --fit v2
+python -m worldlab.experiments.prh theory --cases 300
+python -m worldlab.experiments.prh scaling --data /path/to/prh-proof/paper/data/phase_grid.csv --fit v2
 ```
 
 The scaling command fits the published functional form on the designated grid and reports held-out RMSE separately for the random and long runs. It can use the authors' CSV or a new CSV in the same format.
@@ -72,9 +73,9 @@ git clone https://github.com/galilai-group/prh-proof.git
 git -C prh-proof checkout a2b9949fa907d4fbe562742d4b1ffa7205ab7427
 python -m pip install -e ./prh-proof
 python -m pip install 'stable-pretraining @ git+https://github.com/galilai-group/stable-pretraining@ab836bf'
-worldlab-prh paper-run --checkout ./prh-proof text-cap
-worldlab-prh paper-run --checkout ./prh-proof --run text-cap
-worldlab-prh upstream --checkout ./prh-proof evaluate -- wit-embed dinov2
+python -m worldlab.experiments.prh paper-run --checkout ./prh-proof text-cap
+python -m worldlab.experiments.prh paper-run --checkout ./prh-proof --run text-cap
+python -m worldlab.experiments.prh upstream --checkout ./prh-proof evaluate -- wit-embed dinov2
 ```
 
 `paper-run` reads the exact argument list for a tag from the authors' registry. It prints the command by default. `upstream` delegates to the official `train`, `evaluate`, `caption`, `figures`, `tables` or `data` entry point in the supplied checkout. For pair-free alignment, install the upstream `pairfree` extra and follow the benchmark setup in the [authors' reproduction guide](https://github.com/galilai-group/prh-proof/blob/a2b9949fa907d4fbe562742d4b1ffa7205ab7427/docs/reproduce.md).

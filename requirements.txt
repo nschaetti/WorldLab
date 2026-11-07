@@ -1,0 +1,26 @@
+# Training, offline evaluation and the BoardGPT interpretability app.
+torch>=2.5
+torchvision>=0.20
+numpy
+scipy>=1.11
+scikit-learn>=1.3
+PyYAML>=6
+filelock>=3
+Pillow
+timm>=1.0.20,<1.1
+transformers>=4.50,<5
+datasets>=3
+huggingface-hub
+tokenizers
+safetensors
+h5py>=3.10
+hdf5plugin>=5
+rich
+tqdm
+matplotlib
+seaborn
+pygame
+wandb
+torchmetrics
+streamlit
+ipython
