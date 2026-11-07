@@ -34,14 +34,20 @@ class LeJEPAObjective(nn.Module):
 
     Inputs have shape (views, batch, features), with global views first.
     The paper's Algorithm 2 averages over features as well as samples and
-    views. The target remains in the gradient graph by default.
+    views. The target remains in the gradient graph by default. The PRH
+    recipe pools views for SIGReg and adds its weighted value to prediction.
     """
 
-    def __init__(self, weight: float = 0.05, sigreg: SIGReg | None = None):
+    def __init__(
+        self, weight: float = 0.05, sigreg: SIGReg | None = None, *,
+        pool_views: bool = False, additive: bool = False,
+    ):
         super().__init__()
         if not 0 <= weight <= 1:
             raise ValueError("SIGReg weight must lie in [0, 1]")
         self.weight = weight
+        self.pool_views = pool_views
+        self.additive = additive
         self.sigreg = sigreg if sigreg is not None else SIGReg()
 
     def forward(
@@ -67,8 +73,10 @@ class LeJEPAObjective(nn.Module):
         elif target.shape != projections.shape[1:]:
             raise ValueError("Target must have shape (batch, features)")
         prediction = (predictions.to(projections) - target.to(projections)).square().mean()
-        regularization = self.sigreg(projections, step=step)
-        loss = (1 - self.weight) * prediction + self.weight * regularization
+        samples = projections.flatten(0, 1) if self.pool_views else projections
+        regularization = self.sigreg(samples, step=step)
+        prediction_scale = 1.0 if self.additive else 1 - self.weight
+        loss = prediction_scale * prediction + self.weight * regularization
         return LeJEPAOutput(loss, prediction, regularization)
 
 
@@ -91,17 +99,19 @@ class LeJEPA(nn.Module):
     def encode(self, samples: Tensor) -> Tensor:
         return self.encoder(samples)
 
-    def encode_views(self, views: Tensor | Sequence[Tensor]) -> tuple[Tensor, Tensor]:
+    def _encoded_groups(self, views: Tensor | Sequence[Tensor]):
         if not len(views) or any(view.size(0) != views[0].size(0) for view in views):
             raise ValueError("Views must share the same batch size")
-        batch = views[0].size(0)
-        features, projections = [], []
         for _, group in groupby(views, key=lambda view: view.shape):
             group = list(group)
-            encoded = self.encode(torch.cat(group))
+            yield self.encode(torch.cat(group)), len(group), views[0].size(0)
+
+    def encode_views(self, views: Tensor | Sequence[Tensor]) -> tuple[Tensor, Tensor]:
+        features, projections = [], []
+        for encoded, count, batch in self._encoded_groups(views):
             projected = self.projector(encoded)
-            features.append(encoded.reshape(len(group), batch, -1))
-            projections.append(projected.reshape(len(group), batch, -1))
+            features.append(encoded.reshape(count, batch, -1))
+            projections.append(projected.reshape(count, batch, -1))
         return torch.cat(features), torch.cat(projections)
 
     def forward(
