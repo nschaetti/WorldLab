@@ -1,7 +1,7 @@
 import torch
 
-from boardGPT.games.othello.othello_utils import game_to_board
-from boardGPT.interpretability.spec import (
+from worldlab.board.games.othello.othello_utils import game_to_board
+from worldlab.board.interpretability.spec import (
     OTHELLO_NUM_BOARD_CELLS,
     OTHELLO_NUM_VOCAB_TOKENS,
     get_othello_move_mappings,

@@ -82,7 +82,7 @@ class MockColumns:
     def __init__(self, *args, **kwargs):
         pass
 
-# Create a mock class for boardGPT.utils
+# Create a mock class for worldlab.board.utils
 class MockUtils:
     def __init__(self):
         pass
@@ -97,13 +97,13 @@ with open(checkers_simulator_path, 'r') as f:
     code = f.read()
     
     # Replace import statements
-    code = code.replace('from boardGPT.games.game_interface import GameInterface', '')
+    code = code.replace('from worldlab.board.games.game_interface import GameInterface', '')
     code = code.replace('import matplotlib.pyplot as plt', '')
     code = code.replace('from matplotlib.widgets import Button', '')
     code = code.replace('from PIL import Image', '')
     code = code.replace('from rich.text import Text', '')
     code = code.replace('from rich.columns import Columns', '')
-    code = code.replace('from boardGPT.utils import console, warning, info, error', '')
+    code = code.replace('from worldlab.board.utils import console, warning, info, error', '')
     
     # Add required modules and mocks to the globals
     checkers_board_code['GameInterface'] = GameInterface

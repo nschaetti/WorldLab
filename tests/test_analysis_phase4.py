@@ -1,6 +1,6 @@
 import numpy as np
 
-from boardGPT.analysis import (
+from worldlab.board.analysis import (
     evaluate_linear_decoding_vs_rank,
     fit_linear_decoder,
     mse,

@@ -5,7 +5,7 @@
 Test script to verify that OthelloGame works correctly with the new GameInterface.
 """
 
-from boardGPT.games import GameInterface, OthelloGame
+from worldlab.board.games import GameInterface, OthelloGame
 
 def test_othello_game():
     """Test that OthelloGame implements GameInterface correctly."""

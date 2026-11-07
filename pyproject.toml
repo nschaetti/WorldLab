@@ -37,6 +37,10 @@ board = [
 worldlab-lejepa = "worldlab.experiments.lejepa.cli:main"
 worldlab-lewm = "worldlab.experiments.lewm.cli:main"
 worldlab-prh = "worldlab.experiments.prh.cli:main"
+worldlab-board = "worldlab.board.games.cli:main"
+worldlab-board-train = "worldlab.experiments.board.train:main"
+worldlab-board-autoencoder = "worldlab.experiments.board.autoencoder:main"
+worldlab-board-probe = "worldlab.experiments.board.probe:cli"
 
 [tool.setuptools.packages.find]
 include = ["worldlab*", "boardGPT*"]

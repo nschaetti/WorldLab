@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from boardGPT.games.othello.othello_utils import verify_game
+from worldlab.board.games.othello.othello_utils import verify_game
 
 def test_verify_game():
     # Test case 1: Valid game sequence (first few moves of a standard Othello game)

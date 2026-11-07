@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from boardGPT.interpretability.reproducibility import (
+from worldlab.board.interpretability.reproducibility import (
     collect_environment_snapshot,
     set_global_determinism,
     write_reproducibility_pack,

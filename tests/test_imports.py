@@ -3,7 +3,7 @@ Test script to verify that the imports work correctly after refactoring.
 """
 
 try:
-    from boardGPT.nn import (
+    from worldlab.nn.board import (
         GPT, 
         GPTConfig, 
         LayerNorm, 

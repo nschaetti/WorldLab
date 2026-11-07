@@ -4,9 +4,9 @@ from pathlib import Path
 import torch
 import yaml
 
-from boardGPT.interpretability.cli import main as interp_cli_main
-from boardGPT.interpretability.real_pipeline import run_b4_from_config_file
-from boardGPT.nn import GPT, GPTConfig
+from worldlab.board.interpretability.cli import main as interp_cli_main
+from worldlab.board.interpretability.real_pipeline import run_b4_from_config_file
+from worldlab.nn.board import GPT, GPTConfig
 
 
 def _write_tiny_assets(tmp_path: Path) -> tuple[Path, Path, Path]:

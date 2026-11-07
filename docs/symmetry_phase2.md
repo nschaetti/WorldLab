@@ -13,7 +13,7 @@ and a concept distance matrix, we want to answer:
 
 ## New module
 
-- `boardGPT/analysis/theory_karkada.py`
+- `worldlab/board/analysis/theory_karkada.py`
 
 ### Main APIs
 

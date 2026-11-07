@@ -5,9 +5,8 @@ Test script for boardGPT methods.
 This script tests the methods implemented in boardGPT/__init__.py
 to ensure they work correctly with a game that implements GameInterface.
 """
-
-import boardGPT
-from boardGPT.games.game_interface import GameInterface
+import worldlab.board as boardGPT
+from worldlab.board.games.game_interface import GameInterface
 from typing import List, Tuple, Optional
 import random
 
@@ -115,17 +114,17 @@ def test_boardgpt_methods():
     
     # Test show method
     print("\nInitial game state:")
-    boardGPT.show(game)
+    worldlab.board.show(game)
     
     # Test valid_moves and valid_moves_notation methods
-    valid_moves_coords = boardGPT.valid_moves(game)
-    valid_moves_notation = boardGPT.valid_moves_notation(game)
+    valid_moves_coords = worldlab.board.valid_moves(game)
+    valid_moves_notation = worldlab.board.valid_moves_notation(game)
     
     print("\nValid moves (coordinates):", valid_moves_coords)
     print("Valid moves (notation):", valid_moves_notation)
     
     # Test has_moves method
-    has_moves = boardGPT.has_moves(game)
+    has_moves = worldlab.board.has_moves(game)
     print("\nCurrent player has valid moves:", has_moves)
     
     # Test valid method with both coordinate and notation formats
@@ -134,29 +133,29 @@ def test_boardgpt_methods():
         move_notation = valid_moves_notation[0]
         
         print(f"\nTesting valid method:")
-        print(f"Is {move_coords} valid? {boardGPT.valid(game, move_coords)}")
-        print(f"Is {move_notation} valid? {boardGPT.valid(game, move_notation)}")
+        print(f"Is {move_coords} valid? {worldlab.board.valid(game, move_coords)}")
+        print(f"Is {move_notation} valid? {worldlab.board.valid(game, move_notation)}")
         
         # Test next method with notation format
         print(f"\nApplying move {move_notation} using next method:")
-        boardGPT.next(game, move_notation)
-        boardGPT.show(game)
+        worldlab.board.next(game, move_notation)
+        worldlab.board.show(game)
         
         # Test get_moves method
-        moves_made = boardGPT.get_moves(game)
+        moves_made = worldlab.board.get_moves(game)
         print("\nMoves made so far:", moves_made)
         
         # Test rnext method
         print("\nApplying random move using rnext method:")
-        boardGPT.rnext(game)
-        boardGPT.show(game)
+        worldlab.board.rnext(game)
+        worldlab.board.show(game)
         
         # Test get_moves method again
-        moves_made = boardGPT.get_moves(game)
+        moves_made = worldlab.board.get_moves(game)
         print("\nMoves made so far:", moves_made)
     
     # Test is_over method
-    is_game_over = boardGPT.is_over(game)
+    is_game_over = worldlab.board.is_over(game)
     print("\nIs game over?", is_game_over)
     
     print("\nAll tests completed successfully!")

@@ -1,8 +1,8 @@
 from pathlib import Path
 
-from boardGPT.interpretability.cli import main as cli_main
-from boardGPT.interpretability.pipeline import run_b3_demo_pipeline
-from boardGPT.games.cli import main as games_cli_main
+from worldlab.board.interpretability.cli import main as cli_main
+from worldlab.board.interpretability.pipeline import run_b3_demo_pipeline
+from worldlab.board.games.cli import main as games_cli_main
 
 
 def test_b3_pipeline_outputs_expected_artifacts(tmp_path: Path):

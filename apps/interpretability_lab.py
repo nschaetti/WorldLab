@@ -11,31 +11,31 @@ from __future__ import annotations
 import streamlit as st
 import torch
 
-from boardGPT.interpretability.ui.activations import get_residual_vector, summarize_vector
-from boardGPT.interpretability.ui.compare import compare_run_dirs
-from boardGPT.interpretability.ui.inference import run_next_token_inference
-from boardGPT.interpretability.ui.jobs import JobManager
-from boardGPT.interpretability.ui.loaders import (
+from worldlab.board.interpretability.ui.activations import get_residual_vector, summarize_vector
+from worldlab.board.interpretability.ui.compare import compare_run_dirs
+from worldlab.board.interpretability.ui.inference import run_next_token_inference
+from worldlab.board.interpretability.ui.jobs import JobManager
+from worldlab.board.interpretability.ui.loaders import (
     build_untrained_probe,
     load_model_from_paths,
     load_probe_from_path,
 )
-from boardGPT.interpretability.ui.run_index import (
+from worldlab.board.interpretability.ui.run_index import (
     discover_runs,
     parse_tags,
     read_run_meta,
     read_run_text_preview,
     write_run_meta,
 )
-from boardGPT.interpretability.ui.runs import launch_run
-from boardGPT.interpretability.ui.parsing import parse_input_to_tensor, parse_position
-from boardGPT.interpretability.ui.patching import run_activation_patch_experiment
-from boardGPT.interpretability.ui.probe_view import (
+from worldlab.board.interpretability.ui.runs import launch_run
+from worldlab.board.interpretability.ui.parsing import parse_input_to_tensor, parse_position
+from worldlab.board.interpretability.ui.patching import run_activation_patch_experiment
+from worldlab.board.interpretability.ui.probe_view import (
     format_board_confidence,
     format_board_symbols,
     run_probe_on_vector,
 )
-from boardGPT.interpretability.ui.state import init_state, reset_input_outputs, set_error, set_success
+from worldlab.board.interpretability.ui.state import init_state, reset_input_outputs, set_error, set_success
 
 
 @st.cache_resource(show_spinner=False)

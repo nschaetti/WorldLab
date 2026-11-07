@@ -1,6 +1,6 @@
 import numpy as np
 
-from boardGPT.analysis import (
+from worldlab.board.analysis import (
     build_exponential_kernel_matrix,
     fit_exponential_profile,
     lattice_1d_concept,

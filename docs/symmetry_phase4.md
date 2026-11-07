@@ -13,7 +13,7 @@ paper.
 
 ## New module
 
-- `boardGPT/analysis/decoding.py`
+- `worldlab/board/analysis/decoding.py`
 
 ### Main APIs
 

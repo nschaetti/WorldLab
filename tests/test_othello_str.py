@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # Test script for OthelloGame.__str__ method
 
-from boardGPT.games.othello.othello_simulator import OthelloGame
+from worldlab.board.games.othello.othello_simulator import OthelloGame
 
 def main():
     # Create a new Othello game

@@ -8,8 +8,8 @@ import argparse
 # Add the project root to the Python path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from boardGPT.validation.metrics import invalid_move_rate
-from boardGPT.nn.gpt import GPT, GPTConfig
+from worldlab.board.validation.metrics import invalid_move_rate
+from worldlab.nn.board.gpt import GPT, GPTConfig
 
 
 def main():

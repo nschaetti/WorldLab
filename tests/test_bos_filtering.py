@@ -9,7 +9,7 @@ import os
 # Add the project root to the Python path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from boardGPT.nn.gpt import GPT
+from worldlab.nn.board.gpt import GPT
 
 def test_to_moves_filtering():
     """Test that the to_moves method correctly filters out BOS tokens."""

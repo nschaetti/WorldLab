@@ -2,8 +2,8 @@
 # Minimal test script for the othello function
 
 # Direct imports to avoid dependency issues
-from boardGPT.games.othello.othello_simulator import OthelloGame
-from boardGPT.games.othello.othello_utils import verify_game
+from worldlab.board.games.othello.othello_simulator import OthelloGame
+from worldlab.board.games.othello.othello_utils import verify_game
 
 def othello(moves_str: str) -> OthelloGame:
     """

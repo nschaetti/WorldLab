@@ -9,7 +9,7 @@ import os
 sys.path.insert(0, os.path.abspath('.'))
 
 # Import the OthelloGame class directly
-from boardGPT.games.othello.othello_simulator import OthelloGame
+from worldlab.board.games.othello.othello_simulator import OthelloGame
 
 # Create a new Othello game
 game = OthelloGame()

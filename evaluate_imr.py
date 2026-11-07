@@ -6,11 +6,11 @@ import torch
 from transformers import AutoTokenizer, PreTrainedTokenizerFast
 
 # BoardGPT
-from boardGPT.datasets import load_othello_data_files, GameDataset
-from boardGPT.models import GameGPT
-from boardGPT.nn import GPTConfig, GPT
-from boardGPT.utils import info, error, warning, train_log, eval_log
-from boardGPT.validation import evaluate_IMR
+from worldlab.board.datasets import load_othello_data_files, GameDataset
+from worldlab.nn import GameGPT
+from worldlab.nn.board import GPTConfig, GPT
+from worldlab.board.utils import info, error, warning, train_log, eval_log
+from worldlab.board.validation import evaluate_IMR
 
 
 def parse_args():

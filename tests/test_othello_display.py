@@ -9,7 +9,7 @@ import os
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 # Import the classes directly from the file
-from boardGPT.games.othello.othello_simulator import OthelloBoard, OthelloGame
+from worldlab.board.games.othello.othello_simulator import OthelloBoard, OthelloGame
 
 def test_board_display():
     """Test the display of an OthelloBoard"""

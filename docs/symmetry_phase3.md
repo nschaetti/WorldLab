@@ -11,11 +11,11 @@ distance-based structure.
 
 ## New modules
 
-- `boardGPT/analysis/synthetic_gpt.py`
+- `worldlab/board/analysis/synthetic_gpt.py`
   - tiny GPT builder for synthetic experiments,
   - minimal next-token training loop.
 
-- `boardGPT/analysis/representations.py`
+- `worldlab/board/analysis/representations.py`
   - token-level representation extraction from layer residuals,
   - Gram/PCA bundle builder,
   - symmetry report on representation Gram matrices.

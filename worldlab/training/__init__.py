@@ -1,4 +1,4 @@
-"""Optimization utilities shared by BoardGPT and LeJEPA."""
+"""Optimization utilities shared by WorldLab experiments."""
 
 import math
 
@@ -30,3 +30,19 @@ def optimizer_step(optimizer, *, scaler=None, parameters=None, grad_clip=0.0):
         scaler.step(optimizer)
         scaler.update()
     optimizer.zero_grad(set_to_none=True)
+
+
+def configure_optimizers(module, weight_decay, learning_rate, betas, device_type):
+    """Build AdamW with decay on matrices and embeddings, preserving parameter order."""
+    decay, no_decay = [], []
+    for parameter in module.parameters():
+        if parameter.requires_grad:
+            (decay if parameter.ndim >= 2 else no_decay).append(parameter)
+    groups = [
+        {"params": decay, "weight_decay": weight_decay},
+        {"params": no_decay, "weight_decay": 0.0},
+    ]
+    optimizer = torch.optim.AdamW(
+        groups, lr=learning_rate, betas=betas, fused=True if device_type == "cuda" else None,
+    )
+    return optimizer, sum(p.numel() for p in decay), sum(p.numel() for p in no_decay)

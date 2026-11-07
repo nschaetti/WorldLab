@@ -1,19 +1,19 @@
 import torch
 from torch.utils.data import DataLoader, TensorDataset
 
-from boardGPT.interpretability.interventions import (
+from worldlab.board.interpretability.interventions import (
     InterventionConfig,
     InterventionTarget,
     optimize_residual_delta,
     run_probe_intervention,
 )
-from boardGPT.interpretability.probes import LinearBoardProbe
-from boardGPT.interpretability.protocols import (
+from worldlab.board.interpretability.probes import LinearBoardProbe
+from worldlab.board.interpretability.protocols import (
     ProtocolConfig,
     run_layer_sweep_protocol,
     run_single_target_protocol,
 )
-from boardGPT.nn import GPT, GPTConfig
+from worldlab.nn.board import GPT, GPTConfig
 
 
 def _tiny_model() -> GPT:

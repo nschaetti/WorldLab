@@ -19,10 +19,10 @@ python tools/interpretability_cli.py real-batch \
   --run-name b4_real_batch
 
 # 4) Same commands via games CLI bridge (optional)
-python -m boardGPT.games.cli othello interp real-metrics \
+python -m worldlab.board.games.cli othello interp real-metrics \
   --exp-config config/interpretability/b4_example.yaml \
   --run-name b4_real_metrics_bridge
 
-python -m boardGPT.games.cli othello interp real-batch \
+python -m worldlab.board.games.cli othello interp real-batch \
   --exp-config config/interpretability/b4_example.yaml \
   --run-name b4_real_batch_bridge
