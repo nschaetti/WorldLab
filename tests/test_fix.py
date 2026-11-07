@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # Test script to verify the fix for the ValueError in notation_to_coords
 
-from boardGPT.utils import show_othello
+from worldlab.board.utils import show_othello
 
 # Test with valid moves
 print("Testing with valid moves:")

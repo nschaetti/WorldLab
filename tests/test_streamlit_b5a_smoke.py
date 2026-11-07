@@ -1,15 +1,15 @@
 import torch
 
-from boardGPT.interpretability.probes import LinearBoardProbe
-from boardGPT.interpretability.ui.activations import get_residual_vector, summarize_vector
-from boardGPT.interpretability.ui.inference import run_next_token_inference
-from boardGPT.interpretability.ui.parsing import parse_input_to_tensor, parse_position
-from boardGPT.interpretability.ui.probe_view import (
+from worldlab.board.interpretability.probes import LinearBoardProbe
+from worldlab.board.interpretability.ui.activations import get_residual_vector, summarize_vector
+from worldlab.board.interpretability.ui.inference import run_next_token_inference
+from worldlab.board.interpretability.ui.parsing import parse_input_to_tensor, parse_position
+from worldlab.board.interpretability.ui.probe_view import (
     format_board_confidence,
     format_board_symbols,
     run_probe_on_vector,
 )
-from boardGPT.nn import GPT, GPTConfig
+from worldlab.nn.board import GPT, GPTConfig
 
 
 def _tiny_model() -> GPT:

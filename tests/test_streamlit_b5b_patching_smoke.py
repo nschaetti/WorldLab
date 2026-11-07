@@ -1,8 +1,8 @@
 import torch
 
-from boardGPT.interpretability.probes import LinearBoardProbe
-from boardGPT.interpretability.ui.patching import run_activation_patch_experiment
-from boardGPT.nn import GPT, GPTConfig
+from worldlab.board.interpretability.probes import LinearBoardProbe
+from worldlab.board.interpretability.ui.patching import run_activation_patch_experiment
+from worldlab.nn.board import GPT, GPTConfig
 
 
 def _tiny_model() -> GPT:

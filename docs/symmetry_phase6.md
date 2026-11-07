@@ -5,14 +5,14 @@ index.
 
 ## Additions
 
-- `boardGPT/analysis/workflows.py`
+- `worldlab/board/analysis/workflows.py`
   - `WorkflowConfig`
   - `run_synthetic_symmetry_workflow(...)`
 
 - `tools/symmetry_workflow.py`
   - CLI entry point for end-to-end synthetic runs.
 
-- `boardGPT/analysis/benchmark.py`
+- `worldlab/board/analysis/benchmark.py`
   - multi-run benchmark aggregation utilities.
 
 - `tools/symmetry_benchmark.py`

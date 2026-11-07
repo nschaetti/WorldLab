@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from boardGPT.analysis import (
+from worldlab.board.analysis import (
     PolicyConfig,
     WorkflowConfig,
     flatten_workflow_summary,

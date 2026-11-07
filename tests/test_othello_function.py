@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # Test script for the othello function
-
-import boardGPT as bgpt
+import worldlab.board as bgpt
 
 def test_valid_moves():
     """Test the othello function with valid move sequences."""

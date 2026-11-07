@@ -1,6 +1,6 @@
 import numpy as np
 
-from boardGPT.analysis import (
+from worldlab.board.analysis import (
     PolicyConfig,
     SyntheticWorld,
     build_cooccurrence_statistics,

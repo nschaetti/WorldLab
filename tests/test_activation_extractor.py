@@ -1,11 +1,11 @@
 import torch
 from torch.utils.data import DataLoader, TensorDataset
 
-from boardGPT.interpretability.activation_extractor import (
+from worldlab.board.interpretability.activation_extractor import (
     extract_dataset_residuals,
     extract_residuals,
 )
-from boardGPT.nn import GPT, GPTConfig
+from worldlab.nn.board import GPT, GPTConfig
 
 
 def _build_tiny_model() -> GPT:

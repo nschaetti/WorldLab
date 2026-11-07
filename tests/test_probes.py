@@ -1,7 +1,7 @@
 import torch
 from torch.utils.data import DataLoader, TensorDataset
 
-from boardGPT.interpretability.probes import (
+from worldlab.board.interpretability.probes import (
     LinearBoardProbe,
     MLPBoardProbe,
     eval_probe,

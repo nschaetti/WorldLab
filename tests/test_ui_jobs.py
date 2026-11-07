@@ -1,6 +1,6 @@
 import time
 
-import boardGPT.interpretability.ui.jobs as jobs_mod
+import worldlab.board.interpretability.ui.jobs as jobs_mod
 
 
 def test_job_manager_submit_complete_and_cancel(monkeypatch):

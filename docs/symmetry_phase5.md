@@ -12,7 +12,7 @@ Replicate the key robustness idea:
 
 ## New module
 
-- `boardGPT/analysis/ablations.py`
+- `worldlab/board/analysis/ablations.py`
 
 ### Main APIs
 

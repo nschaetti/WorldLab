@@ -10,7 +10,7 @@ import random
 # Add the project root to the Python path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from boardGPT.validation.metrics import is_valid, invalid_move_rate
+from worldlab.board.validation.metrics import is_valid, invalid_move_rate
 from simulators.othello import create_move_mapping, create_id_to_move_mapping, OthelloGame
 
 

@@ -10,7 +10,7 @@ from __future__ import annotations
 import argparse
 import json
 
-from boardGPT.analysis import PolicyConfig, WorkflowConfig, run_synthetic_symmetry_workflow
+from worldlab.board.analysis import PolicyConfig, WorkflowConfig, run_synthetic_symmetry_workflow
 
 
 def _parse_bool_flags(text: str) -> tuple[bool, ...]:

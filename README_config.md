@@ -23,7 +23,7 @@ This will use the default configuration file `config.yaml` in the project root d
 To use a custom configuration file:
 
 ```bash
-python train.py --config path/to/your/config.yaml
+worldlab-board-train --config path/to/your/config.yaml
 ```
 
 ## Configuration Parameters

@@ -13,7 +13,7 @@ import argparse
 import itertools
 import json
 
-from boardGPT.analysis import (
+from worldlab.board.analysis import (
     PolicyConfig,
     WorkflowConfig,
     run_workflow_benchmark,

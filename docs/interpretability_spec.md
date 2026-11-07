@@ -1,6 +1,6 @@
 # Othello Interpretability Spec
 
-This document defines the conventions used by `boardGPT.interpretability` for Jalon A.
+This document defines the conventions used by `worldlab.board.interpretability` for Jalon A.
 
 ## Token and move conventions
 

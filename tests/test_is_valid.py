@@ -4,7 +4,7 @@ import sys
 # Add the project root to the Python path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from boardGPT.validation.metrics import is_valid_game_sequence
+from worldlab.board.validation.metrics import is_valid_game_sequence
 from simulators.othello import OthelloGame
 
 def test_is_valid_game_sequence():

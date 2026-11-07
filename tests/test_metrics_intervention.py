@@ -1,6 +1,6 @@
 import torch
 
-from boardGPT.interpretability.metrics_intervention import (
+from worldlab.board.interpretability.metrics_intervention import (
     aggregate_by_cell,
     compute_delta_norm_stats,
     compute_off_target_impact,

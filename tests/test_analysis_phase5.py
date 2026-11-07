@@ -1,6 +1,6 @@
 import numpy as np
 
-from boardGPT.analysis import (
+from worldlab.board.analysis import (
     ablate_target_block,
     build_exponential_kernel_matrix,
     helper_reconstruction_curve,

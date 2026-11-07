@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # Test script for invalid moves in plot_othello_game
 
-from boardGPT.utils import plot_othello_game
+from worldlab.board.utils import plot_othello_game
 import matplotlib.pyplot as plt
 
 # Create a list of moves with some invalid ones

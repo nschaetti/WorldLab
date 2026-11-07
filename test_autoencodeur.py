@@ -1,8 +1,8 @@
 
 
 import torch
-from boardGPT.nn import GPTAEConfig, GPTAE
-from boardGPT.models import GameAutoEncoder
+from worldlab.nn.board import GPTAEConfig, GPTAE
+from worldlab.nn import GameAutoEncoder
 
 
 # GPT auto-encodeur

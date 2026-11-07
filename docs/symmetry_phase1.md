@@ -16,17 +16,17 @@ prediction layer. It prepares all required inputs for that layer.
 
 ## New modules
 
-- `boardGPT/analysis/cooccurrence.py`
+- `worldlab/board/analysis/cooccurrence.py`
   - Weighted skip-gram counting,
   - Probability normalization,
   - PMI and `M*` computation.
 
-- `boardGPT/analysis/concepts.py`
+- `worldlab/board/analysis/concepts.py`
   - `ConceptSpec` dataclass,
   - 1D and ND lattice concept builders,
   - open/periodic pairwise distances.
 
-- `boardGPT/analysis/synthetic_sequences.py`
+- `worldlab/board/analysis/synthetic_sequences.py`
   - `SyntheticWorld` and `PolicyConfig`,
   - custom policy-driven sequence generation,
   - optional history-growth behavior ("close to already visited tokens").
@@ -75,7 +75,7 @@ This supports experiments like:
 ## Minimal usage
 
 ```python
-from boardGPT.analysis import (
+from worldlab.board.analysis import (
     lattice_nd_concept,
     SyntheticWorld,
     PolicyConfig,

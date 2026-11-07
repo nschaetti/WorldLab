@@ -20,7 +20,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from boardGPT.interpretability import (
+from worldlab.board.interpretability import (
     InterventionConfig,
     InterventionTarget,
     LinearBoardProbe,
@@ -42,7 +42,7 @@ from boardGPT.interpretability import (
     get_othello_move_mappings,
     move_ids_to_board_labels,
 )
-from boardGPT.nn import GPT, GPTConfig
+from worldlab.nn.board import GPT, GPTConfig
 
 
 def set_seed(seed: int = 1234):

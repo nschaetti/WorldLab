@@ -3,14 +3,14 @@ from pathlib import Path
 import torch
 from torch.utils.data import DataLoader, TensorDataset
 
-from boardGPT.interpretability.io import load_run_artifacts, save_run_artifacts
-from boardGPT.interpretability.probes import LinearBoardProbe
-from boardGPT.interpretability.protocols import (
+from worldlab.board.interpretability.io import load_run_artifacts, save_run_artifacts
+from worldlab.board.interpretability.probes import LinearBoardProbe
+from worldlab.board.interpretability.protocols import (
     ProtocolConfig,
     run_b2_attribution_protocol,
     run_b2_metrics_protocol,
 )
-from boardGPT.nn import GPT, GPTConfig
+from worldlab.nn.board import GPT, GPTConfig
 
 
 def _tiny_model() -> GPT:

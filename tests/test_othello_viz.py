@@ -3,7 +3,7 @@
 Test script for the show_othello visualization function.
 """
 
-from boardGPT.utils.viz import show_othello
+from worldlab.board.utils.viz import show_othello
 
 # Test with no moves (empty board with initial setup)
 print("Testing show_othello with no moves...")

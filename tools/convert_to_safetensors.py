@@ -4,8 +4,8 @@ import json
 
 import torch
 from safetensors.torch import save_model
-from boardGPT.nn import GPTConfig, GPTAEConfig
-from boardGPT.models import GameGPT, GameAutoEncoder
+from worldlab.nn.board import GPTConfig, GPTAEConfig
+from worldlab.nn import GameGPT, GameAutoEncoder
 
 
 if __name__ == "__main__":

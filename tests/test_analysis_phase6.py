@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from boardGPT.analysis import PolicyConfig, WorkflowConfig, run_synthetic_symmetry_workflow
+from worldlab.board.analysis import PolicyConfig, WorkflowConfig, run_synthetic_symmetry_workflow
 
 
 def test_workflow_runs_without_model_and_writes_summary(tmp_path: Path):

@@ -4,16 +4,16 @@ This document summarizes the A/B1/B2/B3 interpretability stack.
 
 ## Components
 
-- `boardGPT/interpretability/spec.py`: Othello token/board conventions.
-- `boardGPT/interpretability/activation_extractor.py`: residual extraction APIs.
-- `boardGPT/interpretability/probes.py`: linear and MLP probes.
-- `boardGPT/interpretability/interventions.py`: latent intervention primitives.
-- `boardGPT/interpretability/protocols.py`: B1/B2 protocol runners.
-- `boardGPT/interpretability/metrics_intervention.py`: intervention metrics.
-- `boardGPT/interpretability/attribution.py`: attribution maps and top contributors.
-- `boardGPT/interpretability/io.py`: artifact persistence.
-- `boardGPT/interpretability/report.py`: CSV + markdown reports.
-- `boardGPT/interpretability/pipeline.py`: B3 end-to-end pipeline orchestrator.
+- `worldlab/board/interpretability/spec.py`: Othello token/board conventions.
+- `worldlab/board/interpretability/activation_extractor.py`: residual extraction APIs.
+- `worldlab/board/interpretability/probes.py`: linear and MLP probes.
+- `worldlab/board/interpretability/interventions.py`: latent intervention primitives.
+- `worldlab/board/interpretability/protocols.py`: B1/B2 protocol runners.
+- `worldlab/board/interpretability/metrics_intervention.py`: intervention metrics.
+- `worldlab/board/interpretability/attribution.py`: attribution maps and top contributors.
+- `worldlab/board/interpretability/io.py`: artifact persistence.
+- `worldlab/board/interpretability/report.py`: CSV + markdown reports.
+- `worldlab/board/interpretability/pipeline.py`: B3 end-to-end pipeline orchestrator.
 
 ## Run the smoke test
 
@@ -54,10 +54,10 @@ python tools/interpretability_cli.py real-batch --exp-config config/interpretabi
 You can also use the games CLI bridge:
 
 ```bash
-python -m boardGPT.games.cli othello interp smoke
-python -m boardGPT.games.cli othello interp b2-metrics --layers 0,1
-python -m boardGPT.games.cli othello interp report --run-dir out_interp/jalon_b3/<run_name>
-python -m boardGPT.games.cli othello interp real-batch --exp-config config/interpretability/b4_example.yaml
+python -m worldlab.board.games.cli othello interp smoke
+python -m worldlab.board.games.cli othello interp b2-metrics --layers 0,1
+python -m worldlab.board.games.cli othello interp report --run-dir out_interp/jalon_b3/<run_name>
+python -m worldlab.board.games.cli othello interp real-batch --exp-config config/interpretability/b4_example.yaml
 ```
 
 ## Artifacts layout

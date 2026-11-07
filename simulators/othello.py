@@ -34,7 +34,7 @@ from matplotlib.widgets import Button
 from PIL import Image
 
 # Import the Othello simulator from the boardGPT package
-from boardGPT.games.othello import (
+from worldlab.board.games.othello import (
     OthelloGame, OthelloBoard, generate_othello_game, create_move_mapping,
     create_id_to_move_mapping, convert_ids_to_notation, load_games,
     extract_game_by_index, extract_games_by_length

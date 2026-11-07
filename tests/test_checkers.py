@@ -1,6 +1,6 @@
 
 import unittest
-from boardGPT.games import CheckersBoard, CheckersGame
+from worldlab.board.games import CheckersBoard, CheckersGame
 
 class CheckersTest(unittest.TestCase):
 

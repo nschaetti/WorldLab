@@ -22,7 +22,7 @@ def print_yellow(text):
 
 # Import the CheckersGame class directly to avoid dependencies
 sys.path.append('/')
-from boardGPT.games.checkers.checkers_simulator import CheckersGame
+from worldlab.board.games.checkers.checkers_simulator import CheckersGame
 
 def test_initialization():
     """Test game initialization."""

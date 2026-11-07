@@ -1,4 +1,4 @@
-from boardGPT.interpretability.attribution import (
+from worldlab.board.interpretability.attribution import (
     compute_intervention_attribution,
     compute_intervention_attribution_summary,
     compute_layer_cell_attribution_map,

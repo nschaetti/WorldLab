@@ -1,8 +1,8 @@
 from pathlib import Path
 
-from boardGPT.interpretability.ui.compare import compare_run_dirs
-from boardGPT.interpretability.ui.run_index import discover_runs
-from boardGPT.interpretability.ui.runs import launch_run
+from worldlab.board.interpretability.ui.compare import compare_run_dirs
+from worldlab.board.interpretability.ui.run_index import discover_runs
+from worldlab.board.interpretability.ui.runs import launch_run
 
 
 def test_b5c_run_launch_index_and_compare(tmp_path: Path):

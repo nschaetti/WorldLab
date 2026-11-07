@@ -1,7 +1,7 @@
 from pathlib import Path
 import json
 
-from boardGPT.interpretability.ui.run_index import discover_runs, parse_tags, read_run_meta, write_run_meta
+from worldlab.board.interpretability.ui.run_index import discover_runs, parse_tags, read_run_meta, write_run_meta
 
 
 def test_run_meta_roundtrip(tmp_path: Path):
